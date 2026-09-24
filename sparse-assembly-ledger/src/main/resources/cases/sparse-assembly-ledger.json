@@ -1,0 +1,4615 @@
+{
+  "caseId": "fea-sparse-ledger",
+  "title": "稀疏装配账：有限元条目、约束消元与矩阵来源追踪",
+  "summary": "计算工程小组导入 element connectivity、局部矩阵、自由度映射和边界约束，装配全局稀疏矩阵并追踪每个非零项来源；随后逐次触发重复自由度、退化单元、孤立节点、约束冲突、浮点求和顺序、重编号与局部矩阵非对称，并在两个分支上分别检验消元与 penalty。",
+  "units": {
+    "length": {
+      "unit": "mm",
+      "datum": "CRS-DWG-A/grid-origin",
+      "note": "坐标基准随节点保留"
+    },
+    "stiffness": {
+      "unit": "N/mm",
+      "datum": "design-matrix-2026Q3",
+      "note": "局部矩阵值的工程单位"
+    }
+  },
+  "bundles": {
+    "baseline": {
+      "label": "v0 基线导入（原始表示全保留）",
+      "nodes": [
+        {
+          "nodeId": "n1",
+          "originalNumber": "NODE-001",
+          "coords": [
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n1.ux",
+            "n1.uy"
+          ]
+        },
+        {
+          "nodeId": "n2",
+          "originalNumber": "NODE-002",
+          "coords": [
+            {
+              "text": "1000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n2.ux",
+            "n2.uy"
+          ]
+        },
+        {
+          "nodeId": "n3",
+          "originalNumber": "NODE-003",
+          "coords": [
+            {
+              "text": "1000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "750",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n3.ux",
+            "n3.uy"
+          ]
+        },
+        {
+          "nodeId": "n4",
+          "originalNumber": "NODE-004",
+          "coords": [
+            {
+              "text": "2000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "750",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n4.ux",
+            "n4.uy"
+          ]
+        }
+      ],
+      "elements": [
+        {
+          "elementId": "e1",
+          "originalNumber": "EL-10",
+          "nodeIds": [
+            "n1",
+            "n2"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 101: EL-10 bar k=1200 N/mm, theta=0",
+          "matrix": [
+            [
+              {
+                "text": "1200"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "-1200"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "-1200"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "1200"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ]
+          ]
+        },
+        {
+          "elementId": "e2",
+          "originalNumber": "EL-11",
+          "nodeIds": [
+            "n2",
+            "n3"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 142: EL-11 bar k=900 N/mm, theta=90deg",
+          "matrix": [
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "900"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "-900"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "-900"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "900"
+              }
+            ]
+          ]
+        },
+        {
+          "elementId": "e3",
+          "originalNumber": "EL-12",
+          "nodeIds": [
+            "n3",
+            "n3"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 158: EL-12 zero-length connector (SUSPECT, both ends n3)",
+          "matrix": [
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ]
+          ]
+        }
+      ],
+      "maps": [
+        {
+          "elementId": "e1",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n1.ux",
+            "n1.uy",
+            "n2.ux",
+            "n2.uy"
+          ]
+        },
+        {
+          "elementId": "e2",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n2.ux",
+            "n2.uy",
+            "n3.ux",
+            "n3.uy"
+          ]
+        },
+        {
+          "elementId": "e3",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n3.ux",
+            "n3.uy",
+            "n3.ux",
+            "n3.uy"
+          ]
+        }
+      ],
+      "constraints": []
+    },
+    "probe-duplicate-dof": {
+      "label": "probe-dup e1 映射重复全局自由度",
+      "nodes": [
+        {
+          "nodeId": "n1",
+          "originalNumber": "NODE-001",
+          "coords": [
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n1.ux",
+            "n1.uy"
+          ]
+        },
+        {
+          "nodeId": "n2",
+          "originalNumber": "NODE-002",
+          "coords": [
+            {
+              "text": "1000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n2.ux",
+            "n2.uy"
+          ]
+        },
+        {
+          "nodeId": "n3",
+          "originalNumber": "NODE-003",
+          "coords": [
+            {
+              "text": "1000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "750",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n3.ux",
+            "n3.uy"
+          ]
+        },
+        {
+          "nodeId": "n4",
+          "originalNumber": "NODE-004",
+          "coords": [
+            {
+              "text": "2000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "750",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n4.ux",
+            "n4.uy"
+          ]
+        }
+      ],
+      "elements": [
+        {
+          "elementId": "e1",
+          "originalNumber": "EL-10",
+          "nodeIds": [
+            "n1",
+            "n2"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 101: EL-10 bar k=1200 N/mm, theta=0",
+          "matrix": [
+            [
+              {
+                "text": "1200"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "-1200"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "-1200"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "1200"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ]
+          ]
+        },
+        {
+          "elementId": "e2",
+          "originalNumber": "EL-11",
+          "nodeIds": [
+            "n2",
+            "n3"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 142: EL-11 bar k=900 N/mm, theta=90deg",
+          "matrix": [
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "900"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "-900"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "-900"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "900"
+              }
+            ]
+          ]
+        },
+        {
+          "elementId": "e3",
+          "originalNumber": "EL-12",
+          "nodeIds": [
+            "n3",
+            "n3"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 158: EL-12 zero-length connector (SUSPECT, both ends n3)",
+          "matrix": [
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ]
+          ]
+        }
+      ],
+      "maps": [
+        {
+          "elementId": "e1",
+          "mapVersion": "map-PROBE-duplicate",
+          "mapping": [
+            "n1.ux",
+            "n1.uy",
+            "n2.ux",
+            "n2.ux"
+          ]
+        },
+        {
+          "elementId": "e2",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n2.ux",
+            "n2.uy",
+            "n3.ux",
+            "n3.uy"
+          ]
+        },
+        {
+          "elementId": "e3",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n3.ux",
+            "n3.uy",
+            "n3.ux",
+            "n3.uy"
+          ]
+        }
+      ],
+      "constraints": []
+    },
+    "elimination-v1": {
+      "label": "分支A 消元：固定 n1.ux / n1.uy",
+      "nodes": [
+        {
+          "nodeId": "n1",
+          "originalNumber": "NODE-001",
+          "coords": [
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n1.ux",
+            "n1.uy"
+          ]
+        },
+        {
+          "nodeId": "n2",
+          "originalNumber": "NODE-002",
+          "coords": [
+            {
+              "text": "1000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n2.ux",
+            "n2.uy"
+          ]
+        },
+        {
+          "nodeId": "n3",
+          "originalNumber": "NODE-003",
+          "coords": [
+            {
+              "text": "1000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "750",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n3.ux",
+            "n3.uy"
+          ]
+        },
+        {
+          "nodeId": "n4",
+          "originalNumber": "NODE-004",
+          "coords": [
+            {
+              "text": "2000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "750",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n4.ux",
+            "n4.uy"
+          ]
+        }
+      ],
+      "elements": [
+        {
+          "elementId": "e1",
+          "originalNumber": "EL-10",
+          "nodeIds": [
+            "n1",
+            "n2"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 101: EL-10 bar k=1200 N/mm, theta=0",
+          "matrix": [
+            [
+              {
+                "text": "1200"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "-1200"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "-1200"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "1200"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ]
+          ]
+        },
+        {
+          "elementId": "e2",
+          "originalNumber": "EL-11",
+          "nodeIds": [
+            "n2",
+            "n3"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 142: EL-11 bar k=900 N/mm, theta=90deg",
+          "matrix": [
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "900"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "-900"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "-900"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "900"
+              }
+            ]
+          ]
+        },
+        {
+          "elementId": "e3",
+          "originalNumber": "EL-12",
+          "nodeIds": [
+            "n3",
+            "n3"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 158: EL-12 zero-length connector (SUSPECT, both ends n3)",
+          "matrix": [
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ]
+          ]
+        }
+      ],
+      "maps": [
+        {
+          "elementId": "e1",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n1.ux",
+            "n1.uy",
+            "n2.ux",
+            "n2.uy"
+          ]
+        },
+        {
+          "elementId": "e2",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n2.ux",
+            "n2.uy",
+            "n3.ux",
+            "n3.uy"
+          ]
+        },
+        {
+          "elementId": "e3",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n3.ux",
+            "n3.uy",
+            "n3.ux",
+            "n3.uy"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "constraintId": "bc-a1",
+          "dofId": "n1.ux",
+          "kind": "FIX",
+          "value": {
+            "text": "0",
+            "unit": "mm",
+            "datum": "CRS-DWG-A/grid-origin"
+          },
+          "version": "bc-v1",
+          "rationale": "左端按铰支座固定（位移基准）"
+        },
+        {
+          "constraintId": "bc-a2",
+          "dofId": "n1.uy",
+          "kind": "FIX",
+          "value": {
+            "text": "0",
+            "unit": "mm",
+            "datum": "CRS-DWG-A/grid-origin"
+          },
+          "version": "bc-v1",
+          "rationale": "左端按铰支座固定（位移基准）"
+        }
+      ]
+    },
+    "constraint-conflict": {
+      "label": "约束冲突 probe：n1.uy 两个互相冲突的 FIX",
+      "nodes": [
+        {
+          "nodeId": "n1",
+          "originalNumber": "NODE-001",
+          "coords": [
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n1.ux",
+            "n1.uy"
+          ]
+        },
+        {
+          "nodeId": "n2",
+          "originalNumber": "NODE-002",
+          "coords": [
+            {
+              "text": "1000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n2.ux",
+            "n2.uy"
+          ]
+        },
+        {
+          "nodeId": "n3",
+          "originalNumber": "NODE-003",
+          "coords": [
+            {
+              "text": "1000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "750",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n3.ux",
+            "n3.uy"
+          ]
+        },
+        {
+          "nodeId": "n4",
+          "originalNumber": "NODE-004",
+          "coords": [
+            {
+              "text": "2000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "750",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n4.ux",
+            "n4.uy"
+          ]
+        }
+      ],
+      "elements": [
+        {
+          "elementId": "e1",
+          "originalNumber": "EL-10",
+          "nodeIds": [
+            "n1",
+            "n2"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 101: EL-10 bar k=1200 N/mm, theta=0",
+          "matrix": [
+            [
+              {
+                "text": "1200"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "-1200"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "-1200"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "1200"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ]
+          ]
+        },
+        {
+          "elementId": "e2",
+          "originalNumber": "EL-11",
+          "nodeIds": [
+            "n2",
+            "n3"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 142: EL-11 bar k=900 N/mm, theta=90deg",
+          "matrix": [
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "900"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "-900"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "-900"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "900"
+              }
+            ]
+          ]
+        },
+        {
+          "elementId": "e3",
+          "originalNumber": "EL-12",
+          "nodeIds": [
+            "n3",
+            "n3"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 158: EL-12 zero-length connector (SUSPECT, both ends n3)",
+          "matrix": [
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ]
+          ]
+        }
+      ],
+      "maps": [
+        {
+          "elementId": "e1",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n1.ux",
+            "n1.uy",
+            "n2.ux",
+            "n2.uy"
+          ]
+        },
+        {
+          "elementId": "e2",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n2.ux",
+            "n2.uy",
+            "n3.ux",
+            "n3.uy"
+          ]
+        },
+        {
+          "elementId": "e3",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n3.ux",
+            "n3.uy",
+            "n3.ux",
+            "n3.uy"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "constraintId": "bc-a1",
+          "dofId": "n1.ux",
+          "kind": "FIX",
+          "value": {
+            "text": "0",
+            "unit": "mm",
+            "datum": "CRS-DWG-A/grid-origin"
+          },
+          "version": "bc-v1",
+          "rationale": "左端按铰支座固定（位移基准）"
+        },
+        {
+          "constraintId": "bc-a2",
+          "dofId": "n1.uy",
+          "kind": "FIX",
+          "value": {
+            "text": "0",
+            "unit": "mm",
+            "datum": "CRS-DWG-A/grid-origin"
+          },
+          "version": "bc-v1",
+          "rationale": "左端按铰支座固定（位移基准）"
+        },
+        {
+          "constraintId": "bc-a2-site",
+          "dofId": "n1.uy",
+          "kind": "FIX",
+          "value": {
+            "text": "2.5",
+            "unit": "mm",
+            "datum": "FIELD-RFI-17/settlement"
+          },
+          "version": "bc-v2",
+          "rationale": "现场 RFI-17 要求预沉降 2.5mm，与图纸 v1 冲突"
+        }
+      ]
+    },
+    "mixed-strategy": {
+      "label": "混用 probe：FIX + PENALTY 同时出现",
+      "nodes": [
+        {
+          "nodeId": "n1",
+          "originalNumber": "NODE-001",
+          "coords": [
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n1.ux",
+            "n1.uy"
+          ]
+        },
+        {
+          "nodeId": "n2",
+          "originalNumber": "NODE-002",
+          "coords": [
+            {
+              "text": "1000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n2.ux",
+            "n2.uy"
+          ]
+        },
+        {
+          "nodeId": "n3",
+          "originalNumber": "NODE-003",
+          "coords": [
+            {
+              "text": "1000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "750",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n3.ux",
+            "n3.uy"
+          ]
+        },
+        {
+          "nodeId": "n4",
+          "originalNumber": "NODE-004",
+          "coords": [
+            {
+              "text": "2000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "750",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n4.ux",
+            "n4.uy"
+          ]
+        }
+      ],
+      "elements": [
+        {
+          "elementId": "e1",
+          "originalNumber": "EL-10",
+          "nodeIds": [
+            "n1",
+            "n2"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 101: EL-10 bar k=1200 N/mm, theta=0",
+          "matrix": [
+            [
+              {
+                "text": "1200"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "-1200"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "-1200"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "1200"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ]
+          ]
+        },
+        {
+          "elementId": "e2",
+          "originalNumber": "EL-11",
+          "nodeIds": [
+            "n2",
+            "n3"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 142: EL-11 bar k=900 N/mm, theta=90deg",
+          "matrix": [
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "900"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "-900"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "-900"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "900"
+              }
+            ]
+          ]
+        },
+        {
+          "elementId": "e3",
+          "originalNumber": "EL-12",
+          "nodeIds": [
+            "n3",
+            "n3"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 158: EL-12 zero-length connector (SUSPECT, both ends n3)",
+          "matrix": [
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ]
+          ]
+        }
+      ],
+      "maps": [
+        {
+          "elementId": "e1",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n1.ux",
+            "n1.uy",
+            "n2.ux",
+            "n2.uy"
+          ]
+        },
+        {
+          "elementId": "e2",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n2.ux",
+            "n2.uy",
+            "n3.ux",
+            "n3.uy"
+          ]
+        },
+        {
+          "elementId": "e3",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n3.ux",
+            "n3.uy",
+            "n3.ux",
+            "n3.uy"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "constraintId": "bc-a1",
+          "dofId": "n1.ux",
+          "kind": "FIX",
+          "value": {
+            "text": "0",
+            "unit": "mm",
+            "datum": "CRS-DWG-A/grid-origin"
+          },
+          "version": "bc-v1",
+          "rationale": "左端按铰支座固定（位移基准）"
+        },
+        {
+          "constraintId": "bc-a2",
+          "dofId": "n1.uy",
+          "kind": "FIX",
+          "value": {
+            "text": "0",
+            "unit": "mm",
+            "datum": "CRS-DWG-A/grid-origin"
+          },
+          "version": "bc-v1",
+          "rationale": "左端按铰支座固定（位移基准）"
+        },
+        {
+          "constraintId": "bc-mix",
+          "dofId": "n3.ux",
+          "kind": "PENALTY",
+          "value": {
+            "text": "1e6",
+            "unit": "N/mm",
+            "datum": "design-matrix-2026Q3"
+          },
+          "version": "bc-v1",
+          "rationale": "有人试图给 n3.ux 加罚弹簧"
+        }
+      ]
+    },
+    "penalty-v1": {
+      "label": "分支B penalty：弹性地基 n3.uy（初始 1.0e4 N/mm）",
+      "nodes": [
+        {
+          "nodeId": "n1",
+          "originalNumber": "NODE-001",
+          "coords": [
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n1.ux",
+            "n1.uy"
+          ]
+        },
+        {
+          "nodeId": "n2",
+          "originalNumber": "NODE-002",
+          "coords": [
+            {
+              "text": "1000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n2.ux",
+            "n2.uy"
+          ]
+        },
+        {
+          "nodeId": "n3",
+          "originalNumber": "NODE-003",
+          "coords": [
+            {
+              "text": "1000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "750",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n3.ux",
+            "n3.uy"
+          ]
+        },
+        {
+          "nodeId": "n4",
+          "originalNumber": "NODE-004",
+          "coords": [
+            {
+              "text": "2000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "750",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n4.ux",
+            "n4.uy"
+          ]
+        }
+      ],
+      "elements": [
+        {
+          "elementId": "e1",
+          "originalNumber": "EL-10",
+          "nodeIds": [
+            "n1",
+            "n2"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 101: EL-10 bar k=1200 N/mm, theta=0",
+          "matrix": [
+            [
+              {
+                "text": "1200"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "-1200"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "-1200"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "1200"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ]
+          ]
+        },
+        {
+          "elementId": "e2",
+          "originalNumber": "EL-11",
+          "nodeIds": [
+            "n2",
+            "n3"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 142: EL-11 bar k=900 N/mm, theta=90deg",
+          "matrix": [
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "900"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "-900"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "-900"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "900"
+              }
+            ]
+          ]
+        },
+        {
+          "elementId": "e3",
+          "originalNumber": "EL-12",
+          "nodeIds": [
+            "n3",
+            "n3"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 158: EL-12 zero-length connector (SUSPECT, both ends n3)",
+          "matrix": [
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ]
+          ]
+        }
+      ],
+      "maps": [
+        {
+          "elementId": "e1",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n1.ux",
+            "n1.uy",
+            "n2.ux",
+            "n2.uy"
+          ]
+        },
+        {
+          "elementId": "e2",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n2.ux",
+            "n2.uy",
+            "n3.ux",
+            "n3.uy"
+          ]
+        },
+        {
+          "elementId": "e3",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n3.ux",
+            "n3.uy",
+            "n3.ux",
+            "n3.uy"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "constraintId": "bc-p1",
+          "dofId": "n3.uy",
+          "kind": "PENALTY",
+          "value": {
+            "text": "1.0e4",
+            "unit": "N/mm",
+            "datum": "design-matrix-2026Q3"
+          },
+          "version": "bc-p-v1",
+          "rationale": "n3 处临时支撑按弹性地基模拟"
+        }
+      ]
+    },
+    "penalty-v2": {
+      "label": "参数修订：penalty 1.0e4 -> 1.0e5 N/mm",
+      "nodes": [
+        {
+          "nodeId": "n1",
+          "originalNumber": "NODE-001",
+          "coords": [
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n1.ux",
+            "n1.uy"
+          ]
+        },
+        {
+          "nodeId": "n2",
+          "originalNumber": "NODE-002",
+          "coords": [
+            {
+              "text": "1000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n2.ux",
+            "n2.uy"
+          ]
+        },
+        {
+          "nodeId": "n3",
+          "originalNumber": "NODE-003",
+          "coords": [
+            {
+              "text": "1000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "750",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n3.ux",
+            "n3.uy"
+          ]
+        },
+        {
+          "nodeId": "n4",
+          "originalNumber": "NODE-004",
+          "coords": [
+            {
+              "text": "2000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "750",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n4.ux",
+            "n4.uy"
+          ]
+        }
+      ],
+      "elements": [
+        {
+          "elementId": "e1",
+          "originalNumber": "EL-10",
+          "nodeIds": [
+            "n1",
+            "n2"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 101: EL-10 bar k=1200 N/mm, theta=0",
+          "matrix": [
+            [
+              {
+                "text": "1200"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "-1200"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "-1200"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "1200"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ]
+          ]
+        },
+        {
+          "elementId": "e2",
+          "originalNumber": "EL-11",
+          "nodeIds": [
+            "n2",
+            "n3"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 142: EL-11 bar k=900 N/mm, theta=90deg",
+          "matrix": [
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "900"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "-900"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "-900"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "900"
+              }
+            ]
+          ]
+        },
+        {
+          "elementId": "e3",
+          "originalNumber": "EL-12",
+          "nodeIds": [
+            "n3",
+            "n3"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 158: EL-12 zero-length connector (SUSPECT, both ends n3)",
+          "matrix": [
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ]
+          ]
+        }
+      ],
+      "maps": [
+        {
+          "elementId": "e1",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n1.ux",
+            "n1.uy",
+            "n2.ux",
+            "n2.uy"
+          ]
+        },
+        {
+          "elementId": "e2",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n2.ux",
+            "n2.uy",
+            "n3.ux",
+            "n3.uy"
+          ]
+        },
+        {
+          "elementId": "e3",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n3.ux",
+            "n3.uy",
+            "n3.ux",
+            "n3.uy"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "constraintId": "bc-p1",
+          "dofId": "n3.uy",
+          "kind": "PENALTY",
+          "value": {
+            "text": "1.0e5",
+            "unit": "N/mm",
+            "datum": "design-matrix-2026Q3"
+          },
+          "version": "bc-p-v2",
+          "rationale": "复核将支撑刚度提高一个数量级（参数修订）"
+        }
+      ]
+    },
+    "renumbered": {
+      "label": "重编号 probe：把 n3 自由度排到前面",
+      "nodes": [
+        {
+          "nodeId": "n1",
+          "originalNumber": "NODE-001",
+          "coords": [
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n1.ux",
+            "n1.uy"
+          ]
+        },
+        {
+          "nodeId": "n2",
+          "originalNumber": "NODE-002",
+          "coords": [
+            {
+              "text": "1000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n2.ux",
+            "n2.uy"
+          ]
+        },
+        {
+          "nodeId": "n3",
+          "originalNumber": "NODE-003",
+          "coords": [
+            {
+              "text": "1000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "750",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n3.ux",
+            "n3.uy"
+          ]
+        },
+        {
+          "nodeId": "n4",
+          "originalNumber": "NODE-004",
+          "coords": [
+            {
+              "text": "2000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "750",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n4.ux",
+            "n4.uy"
+          ]
+        }
+      ],
+      "elements": [
+        {
+          "elementId": "e1",
+          "originalNumber": "EL-10",
+          "nodeIds": [
+            "n1",
+            "n2"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 101: EL-10 bar k=1200 N/mm, theta=0",
+          "matrix": [
+            [
+              {
+                "text": "1200"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "-1200"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "-1200"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "1200"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ]
+          ]
+        },
+        {
+          "elementId": "e2",
+          "originalNumber": "EL-11",
+          "nodeIds": [
+            "n2",
+            "n3"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 142: EL-11 bar k=900 N/mm, theta=90deg",
+          "matrix": [
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "900"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "-900"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "-900"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "900"
+              }
+            ]
+          ]
+        },
+        {
+          "elementId": "e3",
+          "originalNumber": "EL-12",
+          "nodeIds": [
+            "n3",
+            "n3"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 158: EL-12 zero-length connector (SUSPECT, both ends n3)",
+          "matrix": [
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ]
+          ]
+        }
+      ],
+      "maps": [
+        {
+          "elementId": "e1",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n1.ux",
+            "n1.uy",
+            "n2.ux",
+            "n2.uy"
+          ]
+        },
+        {
+          "elementId": "e2",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n2.ux",
+            "n2.uy",
+            "n3.ux",
+            "n3.uy"
+          ]
+        },
+        {
+          "elementId": "e3",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n3.ux",
+            "n3.uy",
+            "n3.ux",
+            "n3.uy"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "constraintId": "bc-a1",
+          "dofId": "n1.ux",
+          "kind": "FIX",
+          "value": {
+            "text": "0",
+            "unit": "mm",
+            "datum": "CRS-DWG-A/grid-origin"
+          },
+          "version": "bc-v1",
+          "rationale": "左端按铰支座固定（位移基准）"
+        },
+        {
+          "constraintId": "bc-a2",
+          "dofId": "n1.uy",
+          "kind": "FIX",
+          "value": {
+            "text": "0",
+            "unit": "mm",
+            "datum": "CRS-DWG-A/grid-origin"
+          },
+          "version": "bc-v1",
+          "rationale": "左端按铰支座固定（位移基准）"
+        }
+      ],
+      "renumbering": {
+        "renumberingId": "rn-1",
+        "basis": "reviewer order: 活跃自由度优先",
+        "rationale": "仅改变显示/存储索引，物理对应不变",
+        "dofToIndex": {
+          "n1.ux": 6,
+          "n1.uy": 7,
+          "n2.ux": 4,
+          "n2.uy": 5,
+          "n3.ux": 0,
+          "n3.uy": 1,
+          "n4.ux": 2,
+          "n4.uy": 3
+        }
+      }
+    },
+    "asymmetric": {
+      "label": "非对称 probe：e2 局部矩阵 (1,2)/(2,1) 不相等",
+      "nodes": [
+        {
+          "nodeId": "n1",
+          "originalNumber": "NODE-001",
+          "coords": [
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n1.ux",
+            "n1.uy"
+          ]
+        },
+        {
+          "nodeId": "n2",
+          "originalNumber": "NODE-002",
+          "coords": [
+            {
+              "text": "1000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n2.ux",
+            "n2.uy"
+          ]
+        },
+        {
+          "nodeId": "n3",
+          "originalNumber": "NODE-003",
+          "coords": [
+            {
+              "text": "1000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "750",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n3.ux",
+            "n3.uy"
+          ]
+        },
+        {
+          "nodeId": "n4",
+          "originalNumber": "NODE-004",
+          "coords": [
+            {
+              "text": "2000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "750",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n4.ux",
+            "n4.uy"
+          ]
+        }
+      ],
+      "elements": [
+        {
+          "elementId": "e1",
+          "originalNumber": "EL-10",
+          "nodeIds": [
+            "n1",
+            "n2"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 101: EL-10 bar k=1200 N/mm, theta=0",
+          "matrix": [
+            [
+              {
+                "text": "1200"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "-1200"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "-1200"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "1200"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ]
+          ]
+        },
+        {
+          "elementId": "e2",
+          "originalNumber": "EL-11",
+          "nodeIds": [
+            "n2",
+            "n3"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 142: EL-11 bar k=900 N/mm, theta=90deg [EDITED: asymmetric perturbation]",
+          "matrix": [
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "900"
+              },
+              {
+                "text": "3"
+              },
+              {
+                "text": "-900"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "-900"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "900"
+              }
+            ]
+          ]
+        },
+        {
+          "elementId": "e3",
+          "originalNumber": "EL-12",
+          "nodeIds": [
+            "n3",
+            "n3"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 158: EL-12 zero-length connector (SUSPECT, both ends n3)",
+          "matrix": [
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ]
+          ]
+        }
+      ],
+      "maps": [
+        {
+          "elementId": "e1",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n1.ux",
+            "n1.uy",
+            "n2.ux",
+            "n2.uy"
+          ]
+        },
+        {
+          "elementId": "e2",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n2.ux",
+            "n2.uy",
+            "n3.ux",
+            "n3.uy"
+          ]
+        },
+        {
+          "elementId": "e3",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n3.ux",
+            "n3.uy",
+            "n3.ux",
+            "n3.uy"
+          ]
+        }
+      ],
+      "constraints": []
+    },
+    "float-order": {
+      "label": "浮点求和顺序 probe：同一条目按两种确定顺序求和",
+      "nodes": [
+        {
+          "nodeId": "n1",
+          "originalNumber": "NODE-001",
+          "coords": [
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n1.ux",
+            "n1.uy"
+          ]
+        },
+        {
+          "nodeId": "n2",
+          "originalNumber": "NODE-002",
+          "coords": [
+            {
+              "text": "1000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n2.ux",
+            "n2.uy"
+          ]
+        },
+        {
+          "nodeId": "n3",
+          "originalNumber": "NODE-003",
+          "coords": [
+            {
+              "text": "1000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "750",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n3.ux",
+            "n3.uy"
+          ]
+        },
+        {
+          "nodeId": "n4",
+          "originalNumber": "NODE-004",
+          "coords": [
+            {
+              "text": "2000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "750",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n4.ux",
+            "n4.uy"
+          ]
+        }
+      ],
+      "elements": [
+        {
+          "elementId": "e1",
+          "originalNumber": "EL-10",
+          "nodeIds": [
+            "n1",
+            "n2"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 101: EL-10 bar k=1200 N/mm, theta=0",
+          "matrix": [
+            [
+              {
+                "text": "0x1.5555555555555p-1"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "-1200"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "-1200"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0x1.5555555555555p-1"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ]
+          ]
+        },
+        {
+          "elementId": "e4",
+          "originalNumber": "EL-13",
+          "nodeIds": [
+            "n2",
+            "n4"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "FLOAT-ORDER probe deck: EL-13 K11=1 added so n2.ux,n2.ux sees 1/3+1/3+1",
+          "matrix": [
+            [
+              {
+                "text": "0x1.5555555555555p-2"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "-1"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "-1"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "1"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ]
+          ]
+        },
+        {
+          "elementId": "e2",
+          "originalNumber": "EL-11",
+          "nodeIds": [
+            "n2",
+            "n3"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 142: EL-11 bar k=900 N/mm, theta=90deg",
+          "matrix": [
+            [
+              {
+                "text": "1"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0x1.5555555555555p-1"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "-900"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "-900"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "900"
+              }
+            ]
+          ]
+        }
+      ],
+      "maps": [
+        {
+          "elementId": "e1",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n1.ux",
+            "n1.uy",
+            "n2.ux",
+            "n2.uy"
+          ]
+        },
+        {
+          "elementId": "e4",
+          "mapVersion": "map-PROBE-floatorder",
+          "mapping": [
+            "n2.ux",
+            "n2.uy",
+            "n4.ux",
+            "n4.uy"
+          ]
+        },
+        {
+          "elementId": "e2",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n2.ux",
+            "n2.uy",
+            "n3.ux",
+            "n3.uy"
+          ]
+        }
+      ],
+      "constraints": []
+    },
+    "source-patch-e1": {
+      "label": "源数据局部改动：e1 轴向刚度 1200 -> 1250（一个 token）",
+      "nodes": [
+        {
+          "nodeId": "n1",
+          "originalNumber": "NODE-001",
+          "coords": [
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n1.ux",
+            "n1.uy"
+          ]
+        },
+        {
+          "nodeId": "n2",
+          "originalNumber": "NODE-002",
+          "coords": [
+            {
+              "text": "1000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n2.ux",
+            "n2.uy"
+          ]
+        },
+        {
+          "nodeId": "n3",
+          "originalNumber": "NODE-003",
+          "coords": [
+            {
+              "text": "1000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "750",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n3.ux",
+            "n3.uy"
+          ]
+        },
+        {
+          "nodeId": "n4",
+          "originalNumber": "NODE-004",
+          "coords": [
+            {
+              "text": "2000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "750",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n4.ux",
+            "n4.uy"
+          ]
+        }
+      ],
+      "elements": [
+        {
+          "elementId": "e1",
+          "originalNumber": "EL-10",
+          "nodeIds": [
+            "n1",
+            "n2"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 101: EL-10 bar k=1200 N/mm, theta=0 [PATCH k=1250]",
+          "matrix": [
+            [
+              {
+                "text": "1250"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "-1250"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "-1250"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "1250"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ]
+          ]
+        },
+        {
+          "elementId": "e2",
+          "originalNumber": "EL-11",
+          "nodeIds": [
+            "n2",
+            "n3"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 142: EL-11 bar k=900 N/mm, theta=90deg",
+          "matrix": [
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "900"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "-900"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "-900"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "900"
+              }
+            ]
+          ]
+        },
+        {
+          "elementId": "e3",
+          "originalNumber": "EL-12",
+          "nodeIds": [
+            "n3",
+            "n3"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 158: EL-12 zero-length connector (SUSPECT, both ends n3)",
+          "matrix": [
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ]
+          ]
+        }
+      ],
+      "maps": [
+        {
+          "elementId": "e1",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n1.ux",
+            "n1.uy",
+            "n2.ux",
+            "n2.uy"
+          ]
+        },
+        {
+          "elementId": "e2",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n2.ux",
+            "n2.uy",
+            "n3.ux",
+            "n3.uy"
+          ]
+        },
+        {
+          "elementId": "e3",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n3.ux",
+            "n3.uy",
+            "n3.ux",
+            "n3.uy"
+          ]
+        }
+      ],
+      "constraints": []
+    },
+    "unconvertible": {
+      "label": "不可规范化 probe：e1 token 写成 1.2e+mm（留在原位置）",
+      "nodes": [
+        {
+          "nodeId": "n1",
+          "originalNumber": "NODE-001",
+          "coords": [
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n1.ux",
+            "n1.uy"
+          ]
+        },
+        {
+          "nodeId": "n2",
+          "originalNumber": "NODE-002",
+          "coords": [
+            {
+              "text": "1000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "0",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n2.ux",
+            "n2.uy"
+          ]
+        },
+        {
+          "nodeId": "n3",
+          "originalNumber": "NODE-003",
+          "coords": [
+            {
+              "text": "1000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "750",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n3.ux",
+            "n3.uy"
+          ]
+        },
+        {
+          "nodeId": "n4",
+          "originalNumber": "NODE-004",
+          "coords": [
+            {
+              "text": "2000",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            },
+            {
+              "text": "750",
+              "unit": "mm",
+              "datum": "CRS-DWG-A/grid-origin"
+            }
+          ],
+          "dofIds": [
+            "n4.ux",
+            "n4.uy"
+          ]
+        }
+      ],
+      "elements": [
+        {
+          "elementId": "e1",
+          "originalNumber": "EL-10",
+          "nodeIds": [
+            "n1",
+            "n2"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 101: EL-10 bar k=1200 N/mm, theta=0",
+          "matrix": [
+            [
+              {
+                "text": "1.2e+mm"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "-1200"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "-1200"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "1200"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ]
+          ]
+        },
+        {
+          "elementId": "e2",
+          "originalNumber": "EL-11",
+          "nodeIds": [
+            "n2",
+            "n3"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 142: EL-11 bar k=900 N/mm, theta=90deg",
+          "matrix": [
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "900"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "-900"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "-900"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "900"
+              }
+            ]
+          ]
+        },
+        {
+          "elementId": "e3",
+          "originalNumber": "EL-12",
+          "nodeIds": [
+            "n3",
+            "n3"
+          ],
+          "localDofs": [
+            "u1",
+            "v1",
+            "u2",
+            "v2"
+          ],
+          "matrixUnit": "N/mm",
+          "floatMode": "ieee754-binary64/input-order",
+          "sourceFragment": "STIFFNESS DECK line 158: EL-12 zero-length connector (SUSPECT, both ends n3)",
+          "matrix": [
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ],
+            [
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              },
+              {
+                "text": "0"
+              }
+            ]
+          ]
+        }
+      ],
+      "maps": [
+        {
+          "elementId": "e1",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n1.ux",
+            "n1.uy",
+            "n2.ux",
+            "n2.uy"
+          ]
+        },
+        {
+          "elementId": "e2",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n2.ux",
+            "n2.uy",
+            "n3.ux",
+            "n3.uy"
+          ]
+        },
+        {
+          "elementId": "e3",
+          "mapVersion": "map-2026-09-01",
+          "mapping": [
+            "n3.ux",
+            "n3.uy",
+            "n3.ux",
+            "n3.uy"
+          ]
+        }
+      ],
+      "constraints": []
+    }
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "kind": "IMPORT",
+      "title": "初始导入：基线（原始表示全保留）",
+      "narrative": "计算工程小组导入 element connectivity、局部矩阵、自由度映射与边界约束。审阅者先核对原单元编号、局部自由度顺序、局部矩阵原始值、全局映射、约束版本、单位和浮点模式是否原样保留。n4 是尚未连接的预留节点。",
+      "params": {
+        "bundleId": "baseline",
+        "strategy": "FREE"
+      },
+      "expectDiagnostics": [
+        "ISOLATED_DOF",
+        "DEGENERATE_ELEMENT"
+      ],
+      "expectState": {
+        "rejected": false,
+        "candidateCount": 1
+      }
+    },
+    {
+      "id": "s2",
+      "kind": "IMPORT",
+      "title": "核对来源：原单元编号 / 局部顺序 / 原始 token",
+      "narrative": "从每个非零项展开单项贡献栈，确认 EL-10、EL-11、EL-12 的原编号、局部 (u1,v1,u2,v2) 顺序、token 文本（如 -1200）、单位 N/mm 与 floatMode 都没有在规范化层丢失。",
+      "params": {
+        "bundleId": "baseline",
+        "strategy": "FREE"
+      },
+      "expectDiagnostics": [
+        "ISOLATED_DOF"
+      ],
+      "expectState": {
+        "entryProvenanceUrn": "entry:n2.ux,n2.ux"
+      }
+    },
+    {
+      "id": "s3",
+      "kind": "PROBE",
+      "title": "边界① 重复自由度：e1 把两个局部自由度映到 n2.ux",
+      "narrative": "故意制造一张错误映射，验证系统拒绝把一个单元的两个局部自由度静默折叠到同一全局自由度；输入片段与受影响对象都留下。",
+      "params": {
+        "bundleId": "probe-duplicate-dof",
+        "strategy": "FREE"
+      },
+      "expectDiagnostics": [
+        "DUPLICATE_DOF",
+        "ISOLATED_DOF",
+        "DEGENERATE_ELEMENT"
+      ],
+      "expectState": {}
+    },
+    {
+      "id": "s4",
+      "kind": "PROBE",
+      "title": "边界② 退化单元：e3 两端都是 n3（零长度）",
+      "narrative": "基线 EL-12 本身是零长度连接单元，节点重复被明确诊断，不会生成无意义刚度而不报警。",
+      "params": {
+        "bundleId": "baseline",
+        "strategy": "FREE"
+      },
+      "expectDiagnostics": [
+        "DEGENERATE_ELEMENT"
+      ],
+      "expectState": {}
+    },
+    {
+      "id": "s5",
+      "kind": "PROBE",
+      "title": "边界③ 孤立节点：n4 未被任何映射引用",
+      "narrative": "n4 的两个自由度不在任何单元映射中，装配结果明确给出 ISOLATED_DOF 诊断及对象列表。",
+      "params": {
+        "bundleId": "baseline",
+        "strategy": "FREE"
+      },
+      "expectDiagnostics": [
+        "ISOLATED_DOF"
+      ],
+      "expectState": {}
+    },
+    {
+      "id": "s6",
+      "kind": "PROBE",
+      "title": "边界④ 约束冲突：n1.uy 同时有 0mm 与 2.5mm 两个 FIX",
+      "narrative": "图纸 bc-v1 与现场 RFI-17 互相冲突。系统不得吞掉多解：保留全部合法候选，标记 INDETERMINATE，等待人工裁定。",
+      "params": {
+        "bundleId": "constraint-conflict",
+        "strategy": "ELIMINATION"
+      },
+      "expectDiagnostics": [
+        "INDETERMINATE_CONSTRAINT"
+      ],
+      "expectState": {
+        "candidateCount": 2
+      }
+    },
+    {
+      "id": "s7",
+      "kind": "PROBE",
+      "title": "边界④b 策略混用：FIX 与 PENALTY 同时出现",
+      "narrative": "有人想在消元模型里再叠罚弹簧。系统以 MIXED_CONSTRAINT_STRATEGY 拒绝整次装配，而不是产出含义不明的矩阵。",
+      "params": {
+        "bundleId": "mixed-strategy",
+        "strategy": "ELIMINATION"
+      },
+      "expectDiagnostics": [
+        "MIXED_CONSTRAINT_STRATEGY"
+      ],
+      "expectState": {
+        "rejected": true,
+        "candidateCount": 0
+      }
+    },
+    {
+      "id": "s8",
+      "kind": "PROBE",
+      "title": "边界⑤ 浮点求和顺序：同一条目两种确定顺序",
+      "narrative": "entry:n2.ux,n2.ux 由三个贡献 1/3+1/3+1 组成。按单元序(行,列) 求和与按 (单元,列,行) 求和相差 1 ulp，证明求和顺序被显式固定并可比较。",
+      "params": {
+        "bundleId": "float-order",
+        "strategy": "FREE"
+      },
+      "expectDiagnostics": [],
+      "expectState": {
+        "sensitivityEntry": "entry:n2.ux,n2.ux"
+      }
+    },
+    {
+      "id": "s9",
+      "kind": "PROBE",
+      "title": "边界⑥ 重编号：把 n3 自由度排到最前",
+      "narrative": "审阅者重排自由度顺序。物理条目身份（dof 对）与值不变，只有行/列索引变化；网格与来源链仍指向同一物理自由度。",
+      "params": {
+        "bundleId": "renumbered",
+        "strategy": "ELIMINATION"
+      },
+      "expectDiagnostics": [],
+      "expectState": {
+        "identityPreserved": true
+      }
+    },
+    {
+      "id": "s10",
+      "kind": "PROBE",
+      "title": "边界⑦ 局部矩阵非对称：e2 被改出非对称扰动",
+      "narrative": "e2 的 (v1,u2)=3 而 (u2,v1)=0，系统给出 ASYMMETRIC_LOCAL_MATRIX 诊断及最大差值与首个位置。",
+      "params": {
+        "bundleId": "asymmetric",
+        "strategy": "FREE"
+      },
+      "expectDiagnostics": [
+        "ASYMMETRIC_LOCAL_MATRIX",
+        "ISOLATED_DOF",
+        "DEGENERATE_ELEMENT"
+      ],
+      "expectState": {}
+    },
+    {
+      "id": "s11",
+      "kind": "PROBE",
+      "title": "附加：不可规范化的值留在原位置",
+      "narrative": "e1 某 token 误写为 1.2e+mm。派生层不丢弃它：原始位置附 UNCONVERTIBLE_VALUE 诊断，该贡献不进入数值求和但仍可追溯。",
+      "params": {
+        "bundleId": "unconvertible",
+        "strategy": "FREE"
+      },
+      "expectDiagnostics": [
+        "UNCONVERTIBLE_VALUE",
+        "ISOLATED_DOF",
+        "DEGENERATE_ELEMENT"
+      ],
+      "expectState": {}
+    },
+    {
+      "id": "s12",
+      "kind": "IMPORT",
+      "title": "分支A：消元装配（固定 n1）",
+      "narrative": "第二分支专门检验消元策略：n1.ux/n1.uy 固定，相关行列移除；与 penalty 严格区分。",
+      "params": {
+        "bundleId": "elimination-v1",
+        "strategy": "ELIMINATION",
+        "branch": "branch-elimination"
+      },
+      "expectDiagnostics": [],
+      "expectState": {
+        "candidateCount": 1
+      }
+    },
+    {
+      "id": "s13",
+      "kind": "IMPORT",
+      "title": "分支B：penalty 装配 v1（弹性地基 1.0e4）",
+      "narrative": "另一分支使用 PENALTY：对角加罚贡献，行列保留。",
+      "params": {
+        "bundleId": "penalty-v1",
+        "strategy": "PENALTY",
+        "branch": "branch-penalty"
+      },
+      "expectDiagnostics": [
+        "ISOLATED_DOF",
+        "DEGENERATE_ELEMENT"
+      ],
+      "expectState": {
+        "candidateCount": 1
+      }
+    },
+    {
+      "id": "s14",
+      "kind": "PARAM_REVISE",
+      "title": "参数修订：penalty 1.0e4 → 1.0e5",
+      "narrative": "复核决定把支撑刚度提高一个数量级。只改一个直接来源（约束版本 bc-p-v2），依赖图仅令依赖该罚值的派生条目失效重算。",
+      "params": {
+        "bundleId": "penalty-v2",
+        "strategy": "PENALTY",
+        "branch": "branch-penalty",
+        "parentEvent": "s13",
+        "changedObject": "con:bc-p1"
+      },
+      "expectDiagnostics": [
+        "ISOLATED_DOF",
+        "DEGENERATE_ELEMENT"
+      ],
+      "expectState": {}
+    },
+    {
+      "id": "s15",
+      "kind": "SOURCE_PATCH",
+      "title": "只影响局部依赖的源数据改动：e1 刚度 1200→1250",
+      "narrative": "工程师只改 e1 的四个局部 token。依赖图传播后，只有引用 e1 贡献的全局条目变脏；仅由 e2 支撑的 entry:n3.uy,n3.uy 仍有效并能说明原因。",
+      "params": {
+        "bundleId": "source-patch-e1",
+        "strategy": "FREE",
+        "branch": "branch-source",
+        "changedObject": "el:e1",
+        "stillValid": "entry:n3.uy,n3.uy",
+        "mustRecompute": "entry:n2.ux,n2.ux"
+      },
+      "expectDiagnostics": [
+        "ISOLATED_DOF",
+        "DEGENERATE_ELEMENT"
+      ],
+      "expectState": {}
+    },
+    {
+      "id": "s16",
+      "kind": "DECIDE",
+      "title": "互相冲突的人工决定：两人从同一版本保存",
+      "narrative": "两位审阅者都基于 s6 之前的同一版本继续：一位采纳图纸 0mm，另一位采纳现场 2.5mm。第二次保存必须得到可解决的冲突；系统保留两边候选，允许比较分支后选择继续哪一版，确认不会不可逆覆盖。",
+      "params": {
+        "baseEvent": "s6",
+        "branch": "branch-decision",
+        "firstPick": "con:bc-a2",
+        "secondPick": "con:bc-a2-site"
+      },
+      "expectDiagnostics": [
+        "CONFLICT_RESOLUTION_REQUIRED"
+      ],
+      "expectState": {
+        "resolvable": true
+      }
+    },
+    {
+      "id": "s17",
+      "kind": "REPLAY_END",
+      "title": "最终复核：来源 → 分支 → 异常 → 重放",
+      "narrative": "页面通过网格连接、稀疏模式、单项贡献栈、约束影响与两个装配版本差异完成复核；接受/否定/参数调整都生成新事件；回到任意旧事件时恢复当时的依赖版本与可见结论。",
+      "params": {},
+      "expectDiagnostics": [],
+      "expectState": {}
+    }
+  ],
+  "expected": {
+    "diagnosticCodes": [
+      "DUPLICATE_DOF",
+      "DEGENERATE_ELEMENT",
+      "ISOLATED_DOF",
+      "INDETERMINATE_CONSTRAINT",
+      "MIXED_CONSTRAINT_STRATEGY",
+      "ASYMMETRIC_LOCAL_MATRIX",
+      "UNCONVERTIBLE_VALUE",
+      "CONSTRAINT_ELIMINATED",
+      "CONSTRAINT_PENALIZED"
+    ],
+    "floatOrderUlpsMin": 1,
+    "branches": [
+      "main",
+      "branch-elimination",
+      "branch-penalty",
+      "branch-source",
+      "branch-decision"
+    ]
+  }
+}
