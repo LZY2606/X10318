@@ -1,0 +1,3275 @@
+{
+  "packId" : "fea-sparse-ledger",
+  "title" : "稀疏装配账：有限元条目、约束消元与矩阵来源追踪",
+  "narrative" : "计算工程小组导入 element connectivity、局部矩阵、自由度映射和边界约束，装配全局稀疏矩阵并追踪每个非零项来源；基线保留原单元编号、局部自由度顺序、局部矩阵值、全局映射、约束版本、单位和浮点模式，随后一次参数修订、一次局部源数据改动、一次互相冲突的人工决定，回放经过重复自由度、退化单元、孤立节点、约束冲突、浮点求和顺序、重编号和局部矩阵非对称。",
+  "versions" : [ {
+    "eventType" : "IMPORT_BASELINE",
+    "actor" : "engineering",
+    "rationale" : "initial import preserves original representation",
+    "version" : {
+      "id" : "v1",
+      "parentId" : null,
+      "label" : "baseline-import",
+      "author" : "engineering",
+      "createdAtMillis" : 1758000000000,
+      "editSummary" : "initial engineering import: connectivity, local matrices, dof mapping and boundary constraints with units and float modes",
+      "nodes" : {
+        "N1" : {
+          "uid" : "N1",
+          "originalNumber" : 1,
+          "x" : {
+            "raw" : "0",
+            "unit" : "m"
+          },
+          "y" : {
+            "raw" : "0",
+            "unit" : "m"
+          },
+          "z" : null,
+          "coordinateFrame" : "GLOBAL-XYZ",
+          "dofAxes" : [ "ux", "uy" ]
+        },
+        "N2" : {
+          "uid" : "N2",
+          "originalNumber" : 2,
+          "x" : {
+            "raw" : "1",
+            "unit" : "m"
+          },
+          "y" : {
+            "raw" : "0",
+            "unit" : "m"
+          },
+          "z" : null,
+          "coordinateFrame" : "GLOBAL-XYZ",
+          "dofAxes" : [ "ux", "uy" ]
+        },
+        "N3" : {
+          "uid" : "N3",
+          "originalNumber" : 3,
+          "x" : {
+            "raw" : "2",
+            "unit" : "m"
+          },
+          "y" : {
+            "raw" : "0",
+            "unit" : "m"
+          },
+          "z" : null,
+          "coordinateFrame" : "GLOBAL-XYZ",
+          "dofAxes" : [ "ux", "uy" ]
+        },
+        "N4" : {
+          "uid" : "N4",
+          "originalNumber" : 4,
+          "x" : {
+            "raw" : "1",
+            "unit" : "m"
+          },
+          "y" : {
+            "raw" : "1",
+            "unit" : "m"
+          },
+          "z" : null,
+          "coordinateFrame" : "GLOBAL-XYZ",
+          "dofAxes" : [ "ux", "uy" ]
+        },
+        "N5" : {
+          "uid" : "N5",
+          "originalNumber" : 5,
+          "x" : {
+            "raw" : "3",
+            "unit" : "m"
+          },
+          "y" : {
+            "raw" : "3",
+            "unit" : "m"
+          },
+          "z" : null,
+          "coordinateFrame" : "GLOBAL-XYZ",
+          "dofAxes" : [ "ux", "uy" ]
+        }
+      },
+      "elements" : {
+        "E1" : {
+          "uid" : "E1",
+          "originalNumber" : 1,
+          "elementType" : "BAR2D",
+          "nodeUids" : [ "N1", "N2" ],
+          "localDofOrder" : [ "N1.ux", "N1.uy", "N2.ux", "N2.uy" ],
+          "note" : ""
+        },
+        "E2" : {
+          "uid" : "E2",
+          "originalNumber" : 2,
+          "elementType" : "BAR2D",
+          "nodeUids" : [ "N2", "N3" ],
+          "localDofOrder" : [ "N2.ux", "N2.uy", "N3.ux", "N3.uy" ],
+          "note" : ""
+        },
+        "E3" : {
+          "uid" : "E3",
+          "originalNumber" : 3,
+          "elementType" : "SPRING1D",
+          "nodeUids" : [ "N2" ],
+          "localDofOrder" : [ "N2.ux" ],
+          "note" : ""
+        },
+        "E7" : {
+          "uid" : "E7",
+          "originalNumber" : 7,
+          "elementType" : "SPRING1D-COUPLED",
+          "nodeUids" : [ "N2" ],
+          "localDofOrder" : [ "N2.ux", "N2.ux" ],
+          "note" : ""
+        },
+        "E10" : {
+          "uid" : "E10",
+          "originalNumber" : 10,
+          "elementType" : "COUPLER3D-DEGENERATE",
+          "nodeUids" : [ "N4", "N4" ],
+          "localDofOrder" : [ "N4.ux", "N4.uy", "N4.ux" ],
+          "note" : ""
+        }
+      },
+      "matrices" : {
+        "LM:E7:LM-1" : {
+          "uid" : "LM:E7:LM-1",
+          "elementId" : "E7",
+          "revision" : "LM-1",
+          "dimension" : 2,
+          "unit" : "N/m",
+          "floatMode" : "IEEE754-BINARY64",
+          "declaredSymmetric" : true,
+          "entries" : [ {
+            "localRow" : 0,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "-1E16",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 1,
+            "localCol" : 1,
+            "value" : {
+              "raw" : "1",
+              "unit" : "N/m"
+            }
+          } ]
+        },
+        "LM:E2:LM-1" : {
+          "uid" : "LM:E2:LM-1",
+          "elementId" : "E2",
+          "revision" : "LM-1",
+          "dimension" : 4,
+          "unit" : "N/m",
+          "floatMode" : "IEEE754-BINARY64",
+          "declaredSymmetric" : false,
+          "entries" : [ {
+            "localRow" : 0,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "3",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 0,
+            "localCol" : 2,
+            "value" : {
+              "raw" : "-1.5",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 1,
+            "localCol" : 1,
+            "value" : {
+              "raw" : "3",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 1,
+            "localCol" : 3,
+            "value" : {
+              "raw" : "-3",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 2,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "-1.2",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 2,
+            "localCol" : 2,
+            "value" : {
+              "raw" : "1",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 3,
+            "localCol" : 1,
+            "value" : {
+              "raw" : "-3",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 3,
+            "localCol" : 3,
+            "value" : {
+              "raw" : "3",
+              "unit" : "N/m"
+            }
+          } ]
+        },
+        "LM:E3:LM-1" : {
+          "uid" : "LM:E3:LM-1",
+          "elementId" : "E3",
+          "revision" : "LM-1",
+          "dimension" : 1,
+          "unit" : "N/m",
+          "floatMode" : "IEEE754-BINARY64",
+          "declaredSymmetric" : true,
+          "entries" : [ {
+            "localRow" : 0,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "1E16",
+              "unit" : "N/m"
+            }
+          } ]
+        },
+        "LM:E10:LM-1" : {
+          "uid" : "LM:E10:LM-1",
+          "elementId" : "E10",
+          "revision" : "LM-1",
+          "dimension" : 3,
+          "unit" : "N/m",
+          "floatMode" : "IEEE754-BINARY64",
+          "declaredSymmetric" : false,
+          "entries" : [ {
+            "localRow" : 0,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "5",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 0,
+            "localCol" : 2,
+            "value" : {
+              "raw" : "-5",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 1,
+            "localCol" : 1,
+            "value" : {
+              "raw" : "5",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 2,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "-5",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 2,
+            "localCol" : 2,
+            "value" : {
+              "raw" : "5",
+              "unit" : "N/m"
+            }
+          } ]
+        },
+        "LM:E1:LM-1" : {
+          "uid" : "LM:E1:LM-1",
+          "elementId" : "E1",
+          "revision" : "LM-1",
+          "dimension" : 4,
+          "unit" : "N/m",
+          "floatMode" : "IEEE754-BINARY64",
+          "declaredSymmetric" : false,
+          "entries" : [ {
+            "localRow" : 0,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "2",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 0,
+            "localCol" : 2,
+            "value" : {
+              "raw" : "-1",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 1,
+            "localCol" : 1,
+            "value" : {
+              "raw" : "2",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 1,
+            "localCol" : 3,
+            "value" : {
+              "raw" : "-2",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 2,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "-1",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 2,
+            "localCol" : 2,
+            "value" : {
+              "raw" : "1",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 3,
+            "localCol" : 1,
+            "value" : {
+              "raw" : "-2",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 3,
+            "localCol" : 3,
+            "value" : {
+              "raw" : "2",
+              "unit" : "N/m"
+            }
+          } ]
+        }
+      },
+      "mappings" : {
+        "MAP-1" : {
+          "revision" : "MAP-1",
+          "entries" : [ {
+            "elementId" : "E1",
+            "localDof" : "N1.ux",
+            "globalDofId" : "N1.ux",
+            "localIndex" : 0
+          }, {
+            "elementId" : "E1",
+            "localDof" : "N1.uy",
+            "globalDofId" : "N1.uy",
+            "localIndex" : 1
+          }, {
+            "elementId" : "E1",
+            "localDof" : "N2.ux",
+            "globalDofId" : "N2.ux",
+            "localIndex" : 2
+          }, {
+            "elementId" : "E1",
+            "localDof" : "N2.uy",
+            "globalDofId" : "N2.uy",
+            "localIndex" : 3
+          }, {
+            "elementId" : "E2",
+            "localDof" : "N2.ux",
+            "globalDofId" : "N2.ux",
+            "localIndex" : 0
+          }, {
+            "elementId" : "E2",
+            "localDof" : "N2.uy",
+            "globalDofId" : "N2.uy",
+            "localIndex" : 1
+          }, {
+            "elementId" : "E2",
+            "localDof" : "N3.ux",
+            "globalDofId" : "N3.ux",
+            "localIndex" : 2
+          }, {
+            "elementId" : "E2",
+            "localDof" : "N3.uy",
+            "globalDofId" : "N3.uy",
+            "localIndex" : 3
+          }, {
+            "elementId" : "E3",
+            "localDof" : "N2.ux",
+            "globalDofId" : "N2.ux",
+            "localIndex" : 0
+          }, {
+            "elementId" : "E7",
+            "localDof" : "N2.ux",
+            "globalDofId" : "N2.ux",
+            "localIndex" : 0
+          }, {
+            "elementId" : "E7",
+            "localDof" : "N2.ux",
+            "globalDofId" : "N2.ux",
+            "localIndex" : 1
+          }, {
+            "elementId" : "E10",
+            "localDof" : "N4.ux",
+            "globalDofId" : "N4.ux",
+            "localIndex" : 0
+          }, {
+            "elementId" : "E10",
+            "localDof" : "N4.uy",
+            "globalDofId" : "N4.uy",
+            "localIndex" : 1
+          }, {
+            "elementId" : "E10",
+            "localDof" : "N4.ux",
+            "globalDofId" : "N4.ux",
+            "localIndex" : 2
+          } ]
+        }
+      },
+      "constraintSets" : {
+        "BC-4" : {
+          "revision" : "BC-4",
+          "constraints" : [ {
+            "uid" : "BC-005",
+            "globalDofId" : "N4.ux",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-006",
+            "globalDofId" : "N4.ux",
+            "kind" : "PRESCRIBED",
+            "value" : {
+              "raw" : "0.005",
+              "unit" : "m"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          } ]
+        },
+        "BC-3" : {
+          "revision" : "BC-3",
+          "constraints" : [ {
+            "uid" : "BC-001",
+            "globalDofId" : "N1.ux",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-002",
+            "globalDofId" : "N1.uy",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-003",
+            "globalDofId" : "N4.uy",
+            "kind" : "PRESCRIBED",
+            "value" : {
+              "raw" : "0.002",
+              "unit" : "m"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-004",
+            "globalDofId" : "N3.ux",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "PENALTY",
+            "note" : ""
+          } ]
+        },
+        "BC-1" : {
+          "revision" : "BC-1",
+          "constraints" : [ {
+            "uid" : "BC-001",
+            "globalDofId" : "N1.ux",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-002",
+            "globalDofId" : "N1.uy",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-003",
+            "globalDofId" : "N4.uy",
+            "kind" : "PRESCRIBED",
+            "value" : {
+              "raw" : "0.002",
+              "unit" : "m"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          } ]
+        }
+      },
+      "renumbers" : {
+        "REN-1" : {
+          "revision" : "REN-1",
+          "dofToNewIndex" : {
+            "N3.ux" : 0,
+            "N3.uy" : 1,
+            "N2.ux" : 2,
+            "N2.uy" : 3,
+            "N1.ux" : 4,
+            "N1.uy" : 5,
+            "N4.ux" : 6,
+            "N4.uy" : 7
+          },
+          "rationale" : "reverse the display order of the mapped dofs (indices only)"
+        }
+      },
+      "selectedMappingRevision" : "MAP-1",
+      "selectedConstraintRevision" : "BC-1",
+      "selectedRenumberRevision" : null,
+      "tags" : [ "BASELINE", "ORIGINAL-REPRESENTATION-PRESERVED" ]
+    }
+  }, {
+    "eventType" : "EDIT_PARAM",
+    "actor" : "engineering",
+    "rationale" : "parameter revision: prescribed displacement 0.002 m -> 0.003 m",
+    "version" : {
+      "id" : "v2",
+      "parentId" : "v1",
+      "label" : "parameter-revision",
+      "author" : "engineering",
+      "createdAtMillis" : 1758000001000,
+      "editSummary" : "prescribed displacement BC-003 revised from 0.002 m to 0.003 m",
+      "nodes" : {
+        "N1" : {
+          "uid" : "N1",
+          "originalNumber" : 1,
+          "x" : {
+            "raw" : "0",
+            "unit" : "m"
+          },
+          "y" : {
+            "raw" : "0",
+            "unit" : "m"
+          },
+          "z" : null,
+          "coordinateFrame" : "GLOBAL-XYZ",
+          "dofAxes" : [ "ux", "uy" ]
+        },
+        "N2" : {
+          "uid" : "N2",
+          "originalNumber" : 2,
+          "x" : {
+            "raw" : "1",
+            "unit" : "m"
+          },
+          "y" : {
+            "raw" : "0",
+            "unit" : "m"
+          },
+          "z" : null,
+          "coordinateFrame" : "GLOBAL-XYZ",
+          "dofAxes" : [ "ux", "uy" ]
+        },
+        "N3" : {
+          "uid" : "N3",
+          "originalNumber" : 3,
+          "x" : {
+            "raw" : "2",
+            "unit" : "m"
+          },
+          "y" : {
+            "raw" : "0",
+            "unit" : "m"
+          },
+          "z" : null,
+          "coordinateFrame" : "GLOBAL-XYZ",
+          "dofAxes" : [ "ux", "uy" ]
+        },
+        "N4" : {
+          "uid" : "N4",
+          "originalNumber" : 4,
+          "x" : {
+            "raw" : "1",
+            "unit" : "m"
+          },
+          "y" : {
+            "raw" : "1",
+            "unit" : "m"
+          },
+          "z" : null,
+          "coordinateFrame" : "GLOBAL-XYZ",
+          "dofAxes" : [ "ux", "uy" ]
+        },
+        "N5" : {
+          "uid" : "N5",
+          "originalNumber" : 5,
+          "x" : {
+            "raw" : "3",
+            "unit" : "m"
+          },
+          "y" : {
+            "raw" : "3",
+            "unit" : "m"
+          },
+          "z" : null,
+          "coordinateFrame" : "GLOBAL-XYZ",
+          "dofAxes" : [ "ux", "uy" ]
+        }
+      },
+      "elements" : {
+        "E1" : {
+          "uid" : "E1",
+          "originalNumber" : 1,
+          "elementType" : "BAR2D",
+          "nodeUids" : [ "N1", "N2" ],
+          "localDofOrder" : [ "N1.ux", "N1.uy", "N2.ux", "N2.uy" ],
+          "note" : ""
+        },
+        "E2" : {
+          "uid" : "E2",
+          "originalNumber" : 2,
+          "elementType" : "BAR2D",
+          "nodeUids" : [ "N2", "N3" ],
+          "localDofOrder" : [ "N2.ux", "N2.uy", "N3.ux", "N3.uy" ],
+          "note" : ""
+        },
+        "E3" : {
+          "uid" : "E3",
+          "originalNumber" : 3,
+          "elementType" : "SPRING1D",
+          "nodeUids" : [ "N2" ],
+          "localDofOrder" : [ "N2.ux" ],
+          "note" : ""
+        },
+        "E7" : {
+          "uid" : "E7",
+          "originalNumber" : 7,
+          "elementType" : "SPRING1D-COUPLED",
+          "nodeUids" : [ "N2" ],
+          "localDofOrder" : [ "N2.ux", "N2.ux" ],
+          "note" : ""
+        },
+        "E10" : {
+          "uid" : "E10",
+          "originalNumber" : 10,
+          "elementType" : "COUPLER3D-DEGENERATE",
+          "nodeUids" : [ "N4", "N4" ],
+          "localDofOrder" : [ "N4.ux", "N4.uy", "N4.ux" ],
+          "note" : ""
+        }
+      },
+      "matrices" : {
+        "LM:E7:LM-1" : {
+          "uid" : "LM:E7:LM-1",
+          "elementId" : "E7",
+          "revision" : "LM-1",
+          "dimension" : 2,
+          "unit" : "N/m",
+          "floatMode" : "IEEE754-BINARY64",
+          "declaredSymmetric" : true,
+          "entries" : [ {
+            "localRow" : 0,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "-1E16",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 1,
+            "localCol" : 1,
+            "value" : {
+              "raw" : "1",
+              "unit" : "N/m"
+            }
+          } ]
+        },
+        "LM:E2:LM-1" : {
+          "uid" : "LM:E2:LM-1",
+          "elementId" : "E2",
+          "revision" : "LM-1",
+          "dimension" : 4,
+          "unit" : "N/m",
+          "floatMode" : "IEEE754-BINARY64",
+          "declaredSymmetric" : false,
+          "entries" : [ {
+            "localRow" : 0,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "3",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 0,
+            "localCol" : 2,
+            "value" : {
+              "raw" : "-1.5",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 1,
+            "localCol" : 1,
+            "value" : {
+              "raw" : "3",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 1,
+            "localCol" : 3,
+            "value" : {
+              "raw" : "-3",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 2,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "-1.2",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 2,
+            "localCol" : 2,
+            "value" : {
+              "raw" : "1",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 3,
+            "localCol" : 1,
+            "value" : {
+              "raw" : "-3",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 3,
+            "localCol" : 3,
+            "value" : {
+              "raw" : "3",
+              "unit" : "N/m"
+            }
+          } ]
+        },
+        "LM:E3:LM-1" : {
+          "uid" : "LM:E3:LM-1",
+          "elementId" : "E3",
+          "revision" : "LM-1",
+          "dimension" : 1,
+          "unit" : "N/m",
+          "floatMode" : "IEEE754-BINARY64",
+          "declaredSymmetric" : true,
+          "entries" : [ {
+            "localRow" : 0,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "1E16",
+              "unit" : "N/m"
+            }
+          } ]
+        },
+        "LM:E10:LM-1" : {
+          "uid" : "LM:E10:LM-1",
+          "elementId" : "E10",
+          "revision" : "LM-1",
+          "dimension" : 3,
+          "unit" : "N/m",
+          "floatMode" : "IEEE754-BINARY64",
+          "declaredSymmetric" : false,
+          "entries" : [ {
+            "localRow" : 0,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "5",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 0,
+            "localCol" : 2,
+            "value" : {
+              "raw" : "-5",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 1,
+            "localCol" : 1,
+            "value" : {
+              "raw" : "5",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 2,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "-5",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 2,
+            "localCol" : 2,
+            "value" : {
+              "raw" : "5",
+              "unit" : "N/m"
+            }
+          } ]
+        },
+        "LM:E1:LM-1" : {
+          "uid" : "LM:E1:LM-1",
+          "elementId" : "E1",
+          "revision" : "LM-1",
+          "dimension" : 4,
+          "unit" : "N/m",
+          "floatMode" : "IEEE754-BINARY64",
+          "declaredSymmetric" : false,
+          "entries" : [ {
+            "localRow" : 0,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "2",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 0,
+            "localCol" : 2,
+            "value" : {
+              "raw" : "-1",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 1,
+            "localCol" : 1,
+            "value" : {
+              "raw" : "2",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 1,
+            "localCol" : 3,
+            "value" : {
+              "raw" : "-2",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 2,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "-1",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 2,
+            "localCol" : 2,
+            "value" : {
+              "raw" : "1",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 3,
+            "localCol" : 1,
+            "value" : {
+              "raw" : "-2",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 3,
+            "localCol" : 3,
+            "value" : {
+              "raw" : "2",
+              "unit" : "N/m"
+            }
+          } ]
+        }
+      },
+      "mappings" : {
+        "MAP-1" : {
+          "revision" : "MAP-1",
+          "entries" : [ {
+            "elementId" : "E1",
+            "localDof" : "N1.ux",
+            "globalDofId" : "N1.ux",
+            "localIndex" : 0
+          }, {
+            "elementId" : "E1",
+            "localDof" : "N1.uy",
+            "globalDofId" : "N1.uy",
+            "localIndex" : 1
+          }, {
+            "elementId" : "E1",
+            "localDof" : "N2.ux",
+            "globalDofId" : "N2.ux",
+            "localIndex" : 2
+          }, {
+            "elementId" : "E1",
+            "localDof" : "N2.uy",
+            "globalDofId" : "N2.uy",
+            "localIndex" : 3
+          }, {
+            "elementId" : "E2",
+            "localDof" : "N2.ux",
+            "globalDofId" : "N2.ux",
+            "localIndex" : 0
+          }, {
+            "elementId" : "E2",
+            "localDof" : "N2.uy",
+            "globalDofId" : "N2.uy",
+            "localIndex" : 1
+          }, {
+            "elementId" : "E2",
+            "localDof" : "N3.ux",
+            "globalDofId" : "N3.ux",
+            "localIndex" : 2
+          }, {
+            "elementId" : "E2",
+            "localDof" : "N3.uy",
+            "globalDofId" : "N3.uy",
+            "localIndex" : 3
+          }, {
+            "elementId" : "E3",
+            "localDof" : "N2.ux",
+            "globalDofId" : "N2.ux",
+            "localIndex" : 0
+          }, {
+            "elementId" : "E7",
+            "localDof" : "N2.ux",
+            "globalDofId" : "N2.ux",
+            "localIndex" : 0
+          }, {
+            "elementId" : "E7",
+            "localDof" : "N2.ux",
+            "globalDofId" : "N2.ux",
+            "localIndex" : 1
+          }, {
+            "elementId" : "E10",
+            "localDof" : "N4.ux",
+            "globalDofId" : "N4.ux",
+            "localIndex" : 0
+          }, {
+            "elementId" : "E10",
+            "localDof" : "N4.uy",
+            "globalDofId" : "N4.uy",
+            "localIndex" : 1
+          }, {
+            "elementId" : "E10",
+            "localDof" : "N4.ux",
+            "globalDofId" : "N4.ux",
+            "localIndex" : 2
+          } ]
+        }
+      },
+      "constraintSets" : {
+        "BC-4" : {
+          "revision" : "BC-4",
+          "constraints" : [ {
+            "uid" : "BC-005",
+            "globalDofId" : "N4.ux",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-006",
+            "globalDofId" : "N4.ux",
+            "kind" : "PRESCRIBED",
+            "value" : {
+              "raw" : "0.005",
+              "unit" : "m"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          } ]
+        },
+        "BC-3" : {
+          "revision" : "BC-3",
+          "constraints" : [ {
+            "uid" : "BC-001",
+            "globalDofId" : "N1.ux",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-002",
+            "globalDofId" : "N1.uy",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-003",
+            "globalDofId" : "N4.uy",
+            "kind" : "PRESCRIBED",
+            "value" : {
+              "raw" : "0.002",
+              "unit" : "m"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-004",
+            "globalDofId" : "N3.ux",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "PENALTY",
+            "note" : ""
+          } ]
+        },
+        "BC-1" : {
+          "revision" : "BC-1",
+          "constraints" : [ {
+            "uid" : "BC-001",
+            "globalDofId" : "N1.ux",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-002",
+            "globalDofId" : "N1.uy",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-003",
+            "globalDofId" : "N4.uy",
+            "kind" : "PRESCRIBED",
+            "value" : {
+              "raw" : "0.002",
+              "unit" : "m"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          } ]
+        },
+        "BC-2" : {
+          "revision" : "BC-2",
+          "constraints" : [ {
+            "uid" : "BC-001",
+            "globalDofId" : "N1.ux",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-002",
+            "globalDofId" : "N1.uy",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-003",
+            "globalDofId" : "N4.uy",
+            "kind" : "PRESCRIBED",
+            "value" : {
+              "raw" : "0.003",
+              "unit" : "m"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          } ]
+        }
+      },
+      "renumbers" : {
+        "REN-1" : {
+          "revision" : "REN-1",
+          "dofToNewIndex" : {
+            "N3.ux" : 0,
+            "N3.uy" : 1,
+            "N2.ux" : 2,
+            "N2.uy" : 3,
+            "N1.ux" : 4,
+            "N1.uy" : 5,
+            "N4.ux" : 6,
+            "N4.uy" : 7
+          },
+          "rationale" : "reverse the display order of the mapped dofs (indices only)"
+        }
+      },
+      "selectedMappingRevision" : "MAP-1",
+      "selectedConstraintRevision" : "BC-2",
+      "selectedRenumberRevision" : null,
+      "tags" : [ "BASELINE", "ORIGINAL-REPRESENTATION-PRESERVED" ]
+    }
+  }, {
+    "eventType" : "EDIT_SOURCE_LOCAL",
+    "actor" : "engineering",
+    "rationale" : "local source change: E2 local matrix entry becomes unconvertible",
+    "version" : {
+      "id" : "v3",
+      "parentId" : "v2",
+      "label" : "local-source-change",
+      "author" : "engineering",
+      "createdAtMillis" : 1758000002000,
+      "editSummary" : "E2 local matrix entry (0,2) reported as 'N/A' by the solver; raw value kept at source, numeric derivation must diagnose it",
+      "nodes" : {
+        "N1" : {
+          "uid" : "N1",
+          "originalNumber" : 1,
+          "x" : {
+            "raw" : "0",
+            "unit" : "m"
+          },
+          "y" : {
+            "raw" : "0",
+            "unit" : "m"
+          },
+          "z" : null,
+          "coordinateFrame" : "GLOBAL-XYZ",
+          "dofAxes" : [ "ux", "uy" ]
+        },
+        "N2" : {
+          "uid" : "N2",
+          "originalNumber" : 2,
+          "x" : {
+            "raw" : "1",
+            "unit" : "m"
+          },
+          "y" : {
+            "raw" : "0",
+            "unit" : "m"
+          },
+          "z" : null,
+          "coordinateFrame" : "GLOBAL-XYZ",
+          "dofAxes" : [ "ux", "uy" ]
+        },
+        "N3" : {
+          "uid" : "N3",
+          "originalNumber" : 3,
+          "x" : {
+            "raw" : "2",
+            "unit" : "m"
+          },
+          "y" : {
+            "raw" : "0",
+            "unit" : "m"
+          },
+          "z" : null,
+          "coordinateFrame" : "GLOBAL-XYZ",
+          "dofAxes" : [ "ux", "uy" ]
+        },
+        "N4" : {
+          "uid" : "N4",
+          "originalNumber" : 4,
+          "x" : {
+            "raw" : "1",
+            "unit" : "m"
+          },
+          "y" : {
+            "raw" : "1",
+            "unit" : "m"
+          },
+          "z" : null,
+          "coordinateFrame" : "GLOBAL-XYZ",
+          "dofAxes" : [ "ux", "uy" ]
+        },
+        "N5" : {
+          "uid" : "N5",
+          "originalNumber" : 5,
+          "x" : {
+            "raw" : "3",
+            "unit" : "m"
+          },
+          "y" : {
+            "raw" : "3",
+            "unit" : "m"
+          },
+          "z" : null,
+          "coordinateFrame" : "GLOBAL-XYZ",
+          "dofAxes" : [ "ux", "uy" ]
+        }
+      },
+      "elements" : {
+        "E1" : {
+          "uid" : "E1",
+          "originalNumber" : 1,
+          "elementType" : "BAR2D",
+          "nodeUids" : [ "N1", "N2" ],
+          "localDofOrder" : [ "N1.ux", "N1.uy", "N2.ux", "N2.uy" ],
+          "note" : ""
+        },
+        "E2" : {
+          "uid" : "E2",
+          "originalNumber" : 2,
+          "elementType" : "BAR2D",
+          "nodeUids" : [ "N2", "N3" ],
+          "localDofOrder" : [ "N2.ux", "N2.uy", "N3.ux", "N3.uy" ],
+          "note" : ""
+        },
+        "E3" : {
+          "uid" : "E3",
+          "originalNumber" : 3,
+          "elementType" : "SPRING1D",
+          "nodeUids" : [ "N2" ],
+          "localDofOrder" : [ "N2.ux" ],
+          "note" : ""
+        },
+        "E7" : {
+          "uid" : "E7",
+          "originalNumber" : 7,
+          "elementType" : "SPRING1D-COUPLED",
+          "nodeUids" : [ "N2" ],
+          "localDofOrder" : [ "N2.ux", "N2.ux" ],
+          "note" : ""
+        },
+        "E10" : {
+          "uid" : "E10",
+          "originalNumber" : 10,
+          "elementType" : "COUPLER3D-DEGENERATE",
+          "nodeUids" : [ "N4", "N4" ],
+          "localDofOrder" : [ "N4.ux", "N4.uy", "N4.ux" ],
+          "note" : ""
+        }
+      },
+      "matrices" : {
+        "LM:E7:LM-1" : {
+          "uid" : "LM:E7:LM-1",
+          "elementId" : "E7",
+          "revision" : "LM-1",
+          "dimension" : 2,
+          "unit" : "N/m",
+          "floatMode" : "IEEE754-BINARY64",
+          "declaredSymmetric" : true,
+          "entries" : [ {
+            "localRow" : 0,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "-1E16",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 1,
+            "localCol" : 1,
+            "value" : {
+              "raw" : "1",
+              "unit" : "N/m"
+            }
+          } ]
+        },
+        "LM:E3:LM-1" : {
+          "uid" : "LM:E3:LM-1",
+          "elementId" : "E3",
+          "revision" : "LM-1",
+          "dimension" : 1,
+          "unit" : "N/m",
+          "floatMode" : "IEEE754-BINARY64",
+          "declaredSymmetric" : true,
+          "entries" : [ {
+            "localRow" : 0,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "1E16",
+              "unit" : "N/m"
+            }
+          } ]
+        },
+        "LM:E10:LM-1" : {
+          "uid" : "LM:E10:LM-1",
+          "elementId" : "E10",
+          "revision" : "LM-1",
+          "dimension" : 3,
+          "unit" : "N/m",
+          "floatMode" : "IEEE754-BINARY64",
+          "declaredSymmetric" : false,
+          "entries" : [ {
+            "localRow" : 0,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "5",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 0,
+            "localCol" : 2,
+            "value" : {
+              "raw" : "-5",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 1,
+            "localCol" : 1,
+            "value" : {
+              "raw" : "5",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 2,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "-5",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 2,
+            "localCol" : 2,
+            "value" : {
+              "raw" : "5",
+              "unit" : "N/m"
+            }
+          } ]
+        },
+        "LM:E1:LM-1" : {
+          "uid" : "LM:E1:LM-1",
+          "elementId" : "E1",
+          "revision" : "LM-1",
+          "dimension" : 4,
+          "unit" : "N/m",
+          "floatMode" : "IEEE754-BINARY64",
+          "declaredSymmetric" : false,
+          "entries" : [ {
+            "localRow" : 0,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "2",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 0,
+            "localCol" : 2,
+            "value" : {
+              "raw" : "-1",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 1,
+            "localCol" : 1,
+            "value" : {
+              "raw" : "2",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 1,
+            "localCol" : 3,
+            "value" : {
+              "raw" : "-2",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 2,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "-1",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 2,
+            "localCol" : 2,
+            "value" : {
+              "raw" : "1",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 3,
+            "localCol" : 1,
+            "value" : {
+              "raw" : "-2",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 3,
+            "localCol" : 3,
+            "value" : {
+              "raw" : "2",
+              "unit" : "N/m"
+            }
+          } ]
+        },
+        "LM:E2:LM-2" : {
+          "uid" : "LM:E2:LM-2",
+          "elementId" : "E2",
+          "revision" : "LM-2",
+          "dimension" : 4,
+          "unit" : "N/m",
+          "floatMode" : "IEEE754-BINARY64",
+          "declaredSymmetric" : false,
+          "entries" : [ {
+            "localRow" : 0,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "3",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 0,
+            "localCol" : 2,
+            "value" : {
+              "raw" : "N/A",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 1,
+            "localCol" : 1,
+            "value" : {
+              "raw" : "3",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 1,
+            "localCol" : 3,
+            "value" : {
+              "raw" : "-3",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 2,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "-1.2",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 2,
+            "localCol" : 2,
+            "value" : {
+              "raw" : "1",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 3,
+            "localCol" : 1,
+            "value" : {
+              "raw" : "-3",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 3,
+            "localCol" : 3,
+            "value" : {
+              "raw" : "3",
+              "unit" : "N/m"
+            }
+          } ]
+        }
+      },
+      "mappings" : {
+        "MAP-1" : {
+          "revision" : "MAP-1",
+          "entries" : [ {
+            "elementId" : "E1",
+            "localDof" : "N1.ux",
+            "globalDofId" : "N1.ux",
+            "localIndex" : 0
+          }, {
+            "elementId" : "E1",
+            "localDof" : "N1.uy",
+            "globalDofId" : "N1.uy",
+            "localIndex" : 1
+          }, {
+            "elementId" : "E1",
+            "localDof" : "N2.ux",
+            "globalDofId" : "N2.ux",
+            "localIndex" : 2
+          }, {
+            "elementId" : "E1",
+            "localDof" : "N2.uy",
+            "globalDofId" : "N2.uy",
+            "localIndex" : 3
+          }, {
+            "elementId" : "E2",
+            "localDof" : "N2.ux",
+            "globalDofId" : "N2.ux",
+            "localIndex" : 0
+          }, {
+            "elementId" : "E2",
+            "localDof" : "N2.uy",
+            "globalDofId" : "N2.uy",
+            "localIndex" : 1
+          }, {
+            "elementId" : "E2",
+            "localDof" : "N3.ux",
+            "globalDofId" : "N3.ux",
+            "localIndex" : 2
+          }, {
+            "elementId" : "E2",
+            "localDof" : "N3.uy",
+            "globalDofId" : "N3.uy",
+            "localIndex" : 3
+          }, {
+            "elementId" : "E3",
+            "localDof" : "N2.ux",
+            "globalDofId" : "N2.ux",
+            "localIndex" : 0
+          }, {
+            "elementId" : "E7",
+            "localDof" : "N2.ux",
+            "globalDofId" : "N2.ux",
+            "localIndex" : 0
+          }, {
+            "elementId" : "E7",
+            "localDof" : "N2.ux",
+            "globalDofId" : "N2.ux",
+            "localIndex" : 1
+          }, {
+            "elementId" : "E10",
+            "localDof" : "N4.ux",
+            "globalDofId" : "N4.ux",
+            "localIndex" : 0
+          }, {
+            "elementId" : "E10",
+            "localDof" : "N4.uy",
+            "globalDofId" : "N4.uy",
+            "localIndex" : 1
+          }, {
+            "elementId" : "E10",
+            "localDof" : "N4.ux",
+            "globalDofId" : "N4.ux",
+            "localIndex" : 2
+          } ]
+        }
+      },
+      "constraintSets" : {
+        "BC-4" : {
+          "revision" : "BC-4",
+          "constraints" : [ {
+            "uid" : "BC-005",
+            "globalDofId" : "N4.ux",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-006",
+            "globalDofId" : "N4.ux",
+            "kind" : "PRESCRIBED",
+            "value" : {
+              "raw" : "0.005",
+              "unit" : "m"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          } ]
+        },
+        "BC-3" : {
+          "revision" : "BC-3",
+          "constraints" : [ {
+            "uid" : "BC-001",
+            "globalDofId" : "N1.ux",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-002",
+            "globalDofId" : "N1.uy",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-003",
+            "globalDofId" : "N4.uy",
+            "kind" : "PRESCRIBED",
+            "value" : {
+              "raw" : "0.002",
+              "unit" : "m"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-004",
+            "globalDofId" : "N3.ux",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "PENALTY",
+            "note" : ""
+          } ]
+        },
+        "BC-1" : {
+          "revision" : "BC-1",
+          "constraints" : [ {
+            "uid" : "BC-001",
+            "globalDofId" : "N1.ux",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-002",
+            "globalDofId" : "N1.uy",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-003",
+            "globalDofId" : "N4.uy",
+            "kind" : "PRESCRIBED",
+            "value" : {
+              "raw" : "0.002",
+              "unit" : "m"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          } ]
+        },
+        "BC-2" : {
+          "revision" : "BC-2",
+          "constraints" : [ {
+            "uid" : "BC-001",
+            "globalDofId" : "N1.ux",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-002",
+            "globalDofId" : "N1.uy",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-003",
+            "globalDofId" : "N4.uy",
+            "kind" : "PRESCRIBED",
+            "value" : {
+              "raw" : "0.003",
+              "unit" : "m"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          } ]
+        }
+      },
+      "renumbers" : {
+        "REN-1" : {
+          "revision" : "REN-1",
+          "dofToNewIndex" : {
+            "N3.ux" : 0,
+            "N3.uy" : 1,
+            "N2.ux" : 2,
+            "N2.uy" : 3,
+            "N1.ux" : 4,
+            "N1.uy" : 5,
+            "N4.ux" : 6,
+            "N4.uy" : 7
+          },
+          "rationale" : "reverse the display order of the mapped dofs (indices only)"
+        }
+      },
+      "selectedMappingRevision" : "MAP-1",
+      "selectedConstraintRevision" : "BC-2",
+      "selectedRenumberRevision" : null,
+      "tags" : [ "BASELINE", "ORIGINAL-REPRESENTATION-PRESERVED" ]
+    }
+  }, {
+    "eventType" : "EDIT_RENUMBER",
+    "actor" : "engineer-a",
+    "rationale" : "branch A: apply renumbering REN-1 (indices only)",
+    "version" : {
+      "id" : "v4a",
+      "parentId" : "v3",
+      "label" : "conflict-branch-a",
+      "author" : "engineer-a",
+      "createdAtMillis" : 1758000003000,
+      "editSummary" : "engineer A selects REN-1 renumbering on the same base as B",
+      "nodes" : {
+        "N1" : {
+          "uid" : "N1",
+          "originalNumber" : 1,
+          "x" : {
+            "raw" : "0",
+            "unit" : "m"
+          },
+          "y" : {
+            "raw" : "0",
+            "unit" : "m"
+          },
+          "z" : null,
+          "coordinateFrame" : "GLOBAL-XYZ",
+          "dofAxes" : [ "ux", "uy" ]
+        },
+        "N2" : {
+          "uid" : "N2",
+          "originalNumber" : 2,
+          "x" : {
+            "raw" : "1",
+            "unit" : "m"
+          },
+          "y" : {
+            "raw" : "0",
+            "unit" : "m"
+          },
+          "z" : null,
+          "coordinateFrame" : "GLOBAL-XYZ",
+          "dofAxes" : [ "ux", "uy" ]
+        },
+        "N3" : {
+          "uid" : "N3",
+          "originalNumber" : 3,
+          "x" : {
+            "raw" : "2",
+            "unit" : "m"
+          },
+          "y" : {
+            "raw" : "0",
+            "unit" : "m"
+          },
+          "z" : null,
+          "coordinateFrame" : "GLOBAL-XYZ",
+          "dofAxes" : [ "ux", "uy" ]
+        },
+        "N4" : {
+          "uid" : "N4",
+          "originalNumber" : 4,
+          "x" : {
+            "raw" : "1",
+            "unit" : "m"
+          },
+          "y" : {
+            "raw" : "1",
+            "unit" : "m"
+          },
+          "z" : null,
+          "coordinateFrame" : "GLOBAL-XYZ",
+          "dofAxes" : [ "ux", "uy" ]
+        },
+        "N5" : {
+          "uid" : "N5",
+          "originalNumber" : 5,
+          "x" : {
+            "raw" : "3",
+            "unit" : "m"
+          },
+          "y" : {
+            "raw" : "3",
+            "unit" : "m"
+          },
+          "z" : null,
+          "coordinateFrame" : "GLOBAL-XYZ",
+          "dofAxes" : [ "ux", "uy" ]
+        }
+      },
+      "elements" : {
+        "E1" : {
+          "uid" : "E1",
+          "originalNumber" : 1,
+          "elementType" : "BAR2D",
+          "nodeUids" : [ "N1", "N2" ],
+          "localDofOrder" : [ "N1.ux", "N1.uy", "N2.ux", "N2.uy" ],
+          "note" : ""
+        },
+        "E2" : {
+          "uid" : "E2",
+          "originalNumber" : 2,
+          "elementType" : "BAR2D",
+          "nodeUids" : [ "N2", "N3" ],
+          "localDofOrder" : [ "N2.ux", "N2.uy", "N3.ux", "N3.uy" ],
+          "note" : ""
+        },
+        "E3" : {
+          "uid" : "E3",
+          "originalNumber" : 3,
+          "elementType" : "SPRING1D",
+          "nodeUids" : [ "N2" ],
+          "localDofOrder" : [ "N2.ux" ],
+          "note" : ""
+        },
+        "E7" : {
+          "uid" : "E7",
+          "originalNumber" : 7,
+          "elementType" : "SPRING1D-COUPLED",
+          "nodeUids" : [ "N2" ],
+          "localDofOrder" : [ "N2.ux", "N2.ux" ],
+          "note" : ""
+        },
+        "E10" : {
+          "uid" : "E10",
+          "originalNumber" : 10,
+          "elementType" : "COUPLER3D-DEGENERATE",
+          "nodeUids" : [ "N4", "N4" ],
+          "localDofOrder" : [ "N4.ux", "N4.uy", "N4.ux" ],
+          "note" : ""
+        }
+      },
+      "matrices" : {
+        "LM:E7:LM-1" : {
+          "uid" : "LM:E7:LM-1",
+          "elementId" : "E7",
+          "revision" : "LM-1",
+          "dimension" : 2,
+          "unit" : "N/m",
+          "floatMode" : "IEEE754-BINARY64",
+          "declaredSymmetric" : true,
+          "entries" : [ {
+            "localRow" : 0,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "-1E16",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 1,
+            "localCol" : 1,
+            "value" : {
+              "raw" : "1",
+              "unit" : "N/m"
+            }
+          } ]
+        },
+        "LM:E3:LM-1" : {
+          "uid" : "LM:E3:LM-1",
+          "elementId" : "E3",
+          "revision" : "LM-1",
+          "dimension" : 1,
+          "unit" : "N/m",
+          "floatMode" : "IEEE754-BINARY64",
+          "declaredSymmetric" : true,
+          "entries" : [ {
+            "localRow" : 0,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "1E16",
+              "unit" : "N/m"
+            }
+          } ]
+        },
+        "LM:E10:LM-1" : {
+          "uid" : "LM:E10:LM-1",
+          "elementId" : "E10",
+          "revision" : "LM-1",
+          "dimension" : 3,
+          "unit" : "N/m",
+          "floatMode" : "IEEE754-BINARY64",
+          "declaredSymmetric" : false,
+          "entries" : [ {
+            "localRow" : 0,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "5",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 0,
+            "localCol" : 2,
+            "value" : {
+              "raw" : "-5",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 1,
+            "localCol" : 1,
+            "value" : {
+              "raw" : "5",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 2,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "-5",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 2,
+            "localCol" : 2,
+            "value" : {
+              "raw" : "5",
+              "unit" : "N/m"
+            }
+          } ]
+        },
+        "LM:E1:LM-1" : {
+          "uid" : "LM:E1:LM-1",
+          "elementId" : "E1",
+          "revision" : "LM-1",
+          "dimension" : 4,
+          "unit" : "N/m",
+          "floatMode" : "IEEE754-BINARY64",
+          "declaredSymmetric" : false,
+          "entries" : [ {
+            "localRow" : 0,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "2",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 0,
+            "localCol" : 2,
+            "value" : {
+              "raw" : "-1",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 1,
+            "localCol" : 1,
+            "value" : {
+              "raw" : "2",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 1,
+            "localCol" : 3,
+            "value" : {
+              "raw" : "-2",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 2,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "-1",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 2,
+            "localCol" : 2,
+            "value" : {
+              "raw" : "1",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 3,
+            "localCol" : 1,
+            "value" : {
+              "raw" : "-2",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 3,
+            "localCol" : 3,
+            "value" : {
+              "raw" : "2",
+              "unit" : "N/m"
+            }
+          } ]
+        },
+        "LM:E2:LM-2" : {
+          "uid" : "LM:E2:LM-2",
+          "elementId" : "E2",
+          "revision" : "LM-2",
+          "dimension" : 4,
+          "unit" : "N/m",
+          "floatMode" : "IEEE754-BINARY64",
+          "declaredSymmetric" : false,
+          "entries" : [ {
+            "localRow" : 0,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "3",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 0,
+            "localCol" : 2,
+            "value" : {
+              "raw" : "N/A",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 1,
+            "localCol" : 1,
+            "value" : {
+              "raw" : "3",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 1,
+            "localCol" : 3,
+            "value" : {
+              "raw" : "-3",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 2,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "-1.2",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 2,
+            "localCol" : 2,
+            "value" : {
+              "raw" : "1",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 3,
+            "localCol" : 1,
+            "value" : {
+              "raw" : "-3",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 3,
+            "localCol" : 3,
+            "value" : {
+              "raw" : "3",
+              "unit" : "N/m"
+            }
+          } ]
+        }
+      },
+      "mappings" : {
+        "MAP-1" : {
+          "revision" : "MAP-1",
+          "entries" : [ {
+            "elementId" : "E1",
+            "localDof" : "N1.ux",
+            "globalDofId" : "N1.ux",
+            "localIndex" : 0
+          }, {
+            "elementId" : "E1",
+            "localDof" : "N1.uy",
+            "globalDofId" : "N1.uy",
+            "localIndex" : 1
+          }, {
+            "elementId" : "E1",
+            "localDof" : "N2.ux",
+            "globalDofId" : "N2.ux",
+            "localIndex" : 2
+          }, {
+            "elementId" : "E1",
+            "localDof" : "N2.uy",
+            "globalDofId" : "N2.uy",
+            "localIndex" : 3
+          }, {
+            "elementId" : "E2",
+            "localDof" : "N2.ux",
+            "globalDofId" : "N2.ux",
+            "localIndex" : 0
+          }, {
+            "elementId" : "E2",
+            "localDof" : "N2.uy",
+            "globalDofId" : "N2.uy",
+            "localIndex" : 1
+          }, {
+            "elementId" : "E2",
+            "localDof" : "N3.ux",
+            "globalDofId" : "N3.ux",
+            "localIndex" : 2
+          }, {
+            "elementId" : "E2",
+            "localDof" : "N3.uy",
+            "globalDofId" : "N3.uy",
+            "localIndex" : 3
+          }, {
+            "elementId" : "E3",
+            "localDof" : "N2.ux",
+            "globalDofId" : "N2.ux",
+            "localIndex" : 0
+          }, {
+            "elementId" : "E7",
+            "localDof" : "N2.ux",
+            "globalDofId" : "N2.ux",
+            "localIndex" : 0
+          }, {
+            "elementId" : "E7",
+            "localDof" : "N2.ux",
+            "globalDofId" : "N2.ux",
+            "localIndex" : 1
+          }, {
+            "elementId" : "E10",
+            "localDof" : "N4.ux",
+            "globalDofId" : "N4.ux",
+            "localIndex" : 0
+          }, {
+            "elementId" : "E10",
+            "localDof" : "N4.uy",
+            "globalDofId" : "N4.uy",
+            "localIndex" : 1
+          }, {
+            "elementId" : "E10",
+            "localDof" : "N4.ux",
+            "globalDofId" : "N4.ux",
+            "localIndex" : 2
+          } ]
+        }
+      },
+      "constraintSets" : {
+        "BC-4" : {
+          "revision" : "BC-4",
+          "constraints" : [ {
+            "uid" : "BC-005",
+            "globalDofId" : "N4.ux",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-006",
+            "globalDofId" : "N4.ux",
+            "kind" : "PRESCRIBED",
+            "value" : {
+              "raw" : "0.005",
+              "unit" : "m"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          } ]
+        },
+        "BC-3" : {
+          "revision" : "BC-3",
+          "constraints" : [ {
+            "uid" : "BC-001",
+            "globalDofId" : "N1.ux",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-002",
+            "globalDofId" : "N1.uy",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-003",
+            "globalDofId" : "N4.uy",
+            "kind" : "PRESCRIBED",
+            "value" : {
+              "raw" : "0.002",
+              "unit" : "m"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-004",
+            "globalDofId" : "N3.ux",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "PENALTY",
+            "note" : ""
+          } ]
+        },
+        "BC-1" : {
+          "revision" : "BC-1",
+          "constraints" : [ {
+            "uid" : "BC-001",
+            "globalDofId" : "N1.ux",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-002",
+            "globalDofId" : "N1.uy",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-003",
+            "globalDofId" : "N4.uy",
+            "kind" : "PRESCRIBED",
+            "value" : {
+              "raw" : "0.002",
+              "unit" : "m"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          } ]
+        },
+        "BC-2" : {
+          "revision" : "BC-2",
+          "constraints" : [ {
+            "uid" : "BC-001",
+            "globalDofId" : "N1.ux",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-002",
+            "globalDofId" : "N1.uy",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-003",
+            "globalDofId" : "N4.uy",
+            "kind" : "PRESCRIBED",
+            "value" : {
+              "raw" : "0.003",
+              "unit" : "m"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          } ]
+        }
+      },
+      "renumbers" : {
+        "REN-1" : {
+          "revision" : "REN-1",
+          "dofToNewIndex" : {
+            "N3.ux" : 0,
+            "N3.uy" : 1,
+            "N2.ux" : 2,
+            "N2.uy" : 3,
+            "N1.ux" : 4,
+            "N1.uy" : 5,
+            "N4.ux" : 6,
+            "N4.uy" : 7
+          },
+          "rationale" : "reverse the display order of the mapped dofs (indices only)"
+        }
+      },
+      "selectedMappingRevision" : "MAP-1",
+      "selectedConstraintRevision" : "BC-2",
+      "selectedRenumberRevision" : "REN-1",
+      "tags" : [ "BASELINE", "ORIGINAL-REPRESENTATION-PRESERVED" ]
+    }
+  }, {
+    "eventType" : "EDIT_CONSTRAINTS",
+    "actor" : "engineer-b",
+    "rationale" : "branch B: select mixed-strategy constraint set BC-3",
+    "version" : {
+      "id" : "v4b",
+      "parentId" : "v3",
+      "label" : "conflict-branch-b",
+      "author" : "engineer-b",
+      "createdAtMillis" : 1758000003000,
+      "editSummary" : "engineer B selects mixed strategy constraint set BC-3 on the same base as A",
+      "nodes" : {
+        "N1" : {
+          "uid" : "N1",
+          "originalNumber" : 1,
+          "x" : {
+            "raw" : "0",
+            "unit" : "m"
+          },
+          "y" : {
+            "raw" : "0",
+            "unit" : "m"
+          },
+          "z" : null,
+          "coordinateFrame" : "GLOBAL-XYZ",
+          "dofAxes" : [ "ux", "uy" ]
+        },
+        "N2" : {
+          "uid" : "N2",
+          "originalNumber" : 2,
+          "x" : {
+            "raw" : "1",
+            "unit" : "m"
+          },
+          "y" : {
+            "raw" : "0",
+            "unit" : "m"
+          },
+          "z" : null,
+          "coordinateFrame" : "GLOBAL-XYZ",
+          "dofAxes" : [ "ux", "uy" ]
+        },
+        "N3" : {
+          "uid" : "N3",
+          "originalNumber" : 3,
+          "x" : {
+            "raw" : "2",
+            "unit" : "m"
+          },
+          "y" : {
+            "raw" : "0",
+            "unit" : "m"
+          },
+          "z" : null,
+          "coordinateFrame" : "GLOBAL-XYZ",
+          "dofAxes" : [ "ux", "uy" ]
+        },
+        "N4" : {
+          "uid" : "N4",
+          "originalNumber" : 4,
+          "x" : {
+            "raw" : "1",
+            "unit" : "m"
+          },
+          "y" : {
+            "raw" : "1",
+            "unit" : "m"
+          },
+          "z" : null,
+          "coordinateFrame" : "GLOBAL-XYZ",
+          "dofAxes" : [ "ux", "uy" ]
+        },
+        "N5" : {
+          "uid" : "N5",
+          "originalNumber" : 5,
+          "x" : {
+            "raw" : "3",
+            "unit" : "m"
+          },
+          "y" : {
+            "raw" : "3",
+            "unit" : "m"
+          },
+          "z" : null,
+          "coordinateFrame" : "GLOBAL-XYZ",
+          "dofAxes" : [ "ux", "uy" ]
+        }
+      },
+      "elements" : {
+        "E1" : {
+          "uid" : "E1",
+          "originalNumber" : 1,
+          "elementType" : "BAR2D",
+          "nodeUids" : [ "N1", "N2" ],
+          "localDofOrder" : [ "N1.ux", "N1.uy", "N2.ux", "N2.uy" ],
+          "note" : ""
+        },
+        "E2" : {
+          "uid" : "E2",
+          "originalNumber" : 2,
+          "elementType" : "BAR2D",
+          "nodeUids" : [ "N2", "N3" ],
+          "localDofOrder" : [ "N2.ux", "N2.uy", "N3.ux", "N3.uy" ],
+          "note" : ""
+        },
+        "E3" : {
+          "uid" : "E3",
+          "originalNumber" : 3,
+          "elementType" : "SPRING1D",
+          "nodeUids" : [ "N2" ],
+          "localDofOrder" : [ "N2.ux" ],
+          "note" : ""
+        },
+        "E7" : {
+          "uid" : "E7",
+          "originalNumber" : 7,
+          "elementType" : "SPRING1D-COUPLED",
+          "nodeUids" : [ "N2" ],
+          "localDofOrder" : [ "N2.ux", "N2.ux" ],
+          "note" : ""
+        },
+        "E10" : {
+          "uid" : "E10",
+          "originalNumber" : 10,
+          "elementType" : "COUPLER3D-DEGENERATE",
+          "nodeUids" : [ "N4", "N4" ],
+          "localDofOrder" : [ "N4.ux", "N4.uy", "N4.ux" ],
+          "note" : ""
+        }
+      },
+      "matrices" : {
+        "LM:E7:LM-1" : {
+          "uid" : "LM:E7:LM-1",
+          "elementId" : "E7",
+          "revision" : "LM-1",
+          "dimension" : 2,
+          "unit" : "N/m",
+          "floatMode" : "IEEE754-BINARY64",
+          "declaredSymmetric" : true,
+          "entries" : [ {
+            "localRow" : 0,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "-1E16",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 1,
+            "localCol" : 1,
+            "value" : {
+              "raw" : "1",
+              "unit" : "N/m"
+            }
+          } ]
+        },
+        "LM:E3:LM-1" : {
+          "uid" : "LM:E3:LM-1",
+          "elementId" : "E3",
+          "revision" : "LM-1",
+          "dimension" : 1,
+          "unit" : "N/m",
+          "floatMode" : "IEEE754-BINARY64",
+          "declaredSymmetric" : true,
+          "entries" : [ {
+            "localRow" : 0,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "1E16",
+              "unit" : "N/m"
+            }
+          } ]
+        },
+        "LM:E10:LM-1" : {
+          "uid" : "LM:E10:LM-1",
+          "elementId" : "E10",
+          "revision" : "LM-1",
+          "dimension" : 3,
+          "unit" : "N/m",
+          "floatMode" : "IEEE754-BINARY64",
+          "declaredSymmetric" : false,
+          "entries" : [ {
+            "localRow" : 0,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "5",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 0,
+            "localCol" : 2,
+            "value" : {
+              "raw" : "-5",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 1,
+            "localCol" : 1,
+            "value" : {
+              "raw" : "5",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 2,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "-5",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 2,
+            "localCol" : 2,
+            "value" : {
+              "raw" : "5",
+              "unit" : "N/m"
+            }
+          } ]
+        },
+        "LM:E1:LM-1" : {
+          "uid" : "LM:E1:LM-1",
+          "elementId" : "E1",
+          "revision" : "LM-1",
+          "dimension" : 4,
+          "unit" : "N/m",
+          "floatMode" : "IEEE754-BINARY64",
+          "declaredSymmetric" : false,
+          "entries" : [ {
+            "localRow" : 0,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "2",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 0,
+            "localCol" : 2,
+            "value" : {
+              "raw" : "-1",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 1,
+            "localCol" : 1,
+            "value" : {
+              "raw" : "2",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 1,
+            "localCol" : 3,
+            "value" : {
+              "raw" : "-2",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 2,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "-1",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 2,
+            "localCol" : 2,
+            "value" : {
+              "raw" : "1",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 3,
+            "localCol" : 1,
+            "value" : {
+              "raw" : "-2",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 3,
+            "localCol" : 3,
+            "value" : {
+              "raw" : "2",
+              "unit" : "N/m"
+            }
+          } ]
+        },
+        "LM:E2:LM-2" : {
+          "uid" : "LM:E2:LM-2",
+          "elementId" : "E2",
+          "revision" : "LM-2",
+          "dimension" : 4,
+          "unit" : "N/m",
+          "floatMode" : "IEEE754-BINARY64",
+          "declaredSymmetric" : false,
+          "entries" : [ {
+            "localRow" : 0,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "3",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 0,
+            "localCol" : 2,
+            "value" : {
+              "raw" : "N/A",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 1,
+            "localCol" : 1,
+            "value" : {
+              "raw" : "3",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 1,
+            "localCol" : 3,
+            "value" : {
+              "raw" : "-3",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 2,
+            "localCol" : 0,
+            "value" : {
+              "raw" : "-1.2",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 2,
+            "localCol" : 2,
+            "value" : {
+              "raw" : "1",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 3,
+            "localCol" : 1,
+            "value" : {
+              "raw" : "-3",
+              "unit" : "N/m"
+            }
+          }, {
+            "localRow" : 3,
+            "localCol" : 3,
+            "value" : {
+              "raw" : "3",
+              "unit" : "N/m"
+            }
+          } ]
+        }
+      },
+      "mappings" : {
+        "MAP-1" : {
+          "revision" : "MAP-1",
+          "entries" : [ {
+            "elementId" : "E1",
+            "localDof" : "N1.ux",
+            "globalDofId" : "N1.ux",
+            "localIndex" : 0
+          }, {
+            "elementId" : "E1",
+            "localDof" : "N1.uy",
+            "globalDofId" : "N1.uy",
+            "localIndex" : 1
+          }, {
+            "elementId" : "E1",
+            "localDof" : "N2.ux",
+            "globalDofId" : "N2.ux",
+            "localIndex" : 2
+          }, {
+            "elementId" : "E1",
+            "localDof" : "N2.uy",
+            "globalDofId" : "N2.uy",
+            "localIndex" : 3
+          }, {
+            "elementId" : "E2",
+            "localDof" : "N2.ux",
+            "globalDofId" : "N2.ux",
+            "localIndex" : 0
+          }, {
+            "elementId" : "E2",
+            "localDof" : "N2.uy",
+            "globalDofId" : "N2.uy",
+            "localIndex" : 1
+          }, {
+            "elementId" : "E2",
+            "localDof" : "N3.ux",
+            "globalDofId" : "N3.ux",
+            "localIndex" : 2
+          }, {
+            "elementId" : "E2",
+            "localDof" : "N3.uy",
+            "globalDofId" : "N3.uy",
+            "localIndex" : 3
+          }, {
+            "elementId" : "E3",
+            "localDof" : "N2.ux",
+            "globalDofId" : "N2.ux",
+            "localIndex" : 0
+          }, {
+            "elementId" : "E7",
+            "localDof" : "N2.ux",
+            "globalDofId" : "N2.ux",
+            "localIndex" : 0
+          }, {
+            "elementId" : "E7",
+            "localDof" : "N2.ux",
+            "globalDofId" : "N2.ux",
+            "localIndex" : 1
+          }, {
+            "elementId" : "E10",
+            "localDof" : "N4.ux",
+            "globalDofId" : "N4.ux",
+            "localIndex" : 0
+          }, {
+            "elementId" : "E10",
+            "localDof" : "N4.uy",
+            "globalDofId" : "N4.uy",
+            "localIndex" : 1
+          }, {
+            "elementId" : "E10",
+            "localDof" : "N4.ux",
+            "globalDofId" : "N4.ux",
+            "localIndex" : 2
+          } ]
+        }
+      },
+      "constraintSets" : {
+        "BC-4" : {
+          "revision" : "BC-4",
+          "constraints" : [ {
+            "uid" : "BC-005",
+            "globalDofId" : "N4.ux",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-006",
+            "globalDofId" : "N4.ux",
+            "kind" : "PRESCRIBED",
+            "value" : {
+              "raw" : "0.005",
+              "unit" : "m"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          } ]
+        },
+        "BC-3" : {
+          "revision" : "BC-3",
+          "constraints" : [ {
+            "uid" : "BC-001",
+            "globalDofId" : "N1.ux",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-002",
+            "globalDofId" : "N1.uy",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-003",
+            "globalDofId" : "N4.uy",
+            "kind" : "PRESCRIBED",
+            "value" : {
+              "raw" : "0.002",
+              "unit" : "m"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-004",
+            "globalDofId" : "N3.ux",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "PENALTY",
+            "note" : ""
+          } ]
+        },
+        "BC-1" : {
+          "revision" : "BC-1",
+          "constraints" : [ {
+            "uid" : "BC-001",
+            "globalDofId" : "N1.ux",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-002",
+            "globalDofId" : "N1.uy",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-003",
+            "globalDofId" : "N4.uy",
+            "kind" : "PRESCRIBED",
+            "value" : {
+              "raw" : "0.002",
+              "unit" : "m"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          } ]
+        },
+        "BC-2" : {
+          "revision" : "BC-2",
+          "constraints" : [ {
+            "uid" : "BC-001",
+            "globalDofId" : "N1.ux",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-002",
+            "globalDofId" : "N1.uy",
+            "kind" : "FIXED",
+            "value" : {
+              "raw" : "0",
+              "unit" : "N/A"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          }, {
+            "uid" : "BC-003",
+            "globalDofId" : "N4.uy",
+            "kind" : "PRESCRIBED",
+            "value" : {
+              "raw" : "0.003",
+              "unit" : "m"
+            },
+            "strategy" : "ELIMINATION",
+            "note" : ""
+          } ]
+        }
+      },
+      "renumbers" : {
+        "REN-1" : {
+          "revision" : "REN-1",
+          "dofToNewIndex" : {
+            "N3.ux" : 0,
+            "N3.uy" : 1,
+            "N2.ux" : 2,
+            "N2.uy" : 3,
+            "N1.ux" : 4,
+            "N1.uy" : 5,
+            "N4.ux" : 6,
+            "N4.uy" : 7
+          },
+          "rationale" : "reverse the display order of the mapped dofs (indices only)"
+        }
+      },
+      "selectedMappingRevision" : "MAP-1",
+      "selectedConstraintRevision" : "BC-3",
+      "selectedRenumberRevision" : null,
+      "tags" : [ "BASELINE", "ORIGINAL-REPRESENTATION-PRESERVED" ]
+    }
+  } ],
+  "replay" : [ {
+    "n" : 1,
+    "action" : "LOAD",
+    "id" : "v1",
+    "on" : null,
+    "version" : null,
+    "summation" : null,
+    "strategy" : null,
+    "renumber" : null,
+    "constraintRevision" : null,
+    "choose" : null,
+    "conflictId" : null,
+    "actor" : null,
+    "title" : "导入基线并核对原始表示",
+    "expect" : {
+      "mappedDofs" : 8,
+      "elements" : 5
+    }
+  }, {
+    "n" : 2,
+    "action" : "ASSEMBLE",
+    "id" : "D1",
+    "on" : "v1",
+    "version" : null,
+    "summation" : "DOUBLE_CANONICAL",
+    "strategy" : null,
+    "renumber" : null,
+    "constraintRevision" : null,
+    "choose" : null,
+    "conflictId" : null,
+    "actor" : null,
+    "title" : "规范顺序装配：退化单元/孤立节点/重复自由度/非对称均留诊",
+    "expect" : {
+      "complete" : true,
+      "diagnosticsContains" : [ "ISOLATED_DOF", "DEGENERATE_ELEMENT", "DUPLICATE_DOF", "LOCAL_MATRIX_ASYMMETRIC" ],
+      "entry" : {
+        "double" : 5.0,
+        "rowDof" : "N2.ux",
+        "exact" : "5",
+        "colDof" : "N2.ux"
+      }
+    }
+  }, {
+    "n" : 3,
+    "action" : "ASSEMBLE",
+    "id" : "D2",
+    "on" : "v1",
+    "version" : null,
+    "summation" : "DOUBLE_REVERSED",
+    "strategy" : null,
+    "renumber" : null,
+    "constraintRevision" : null,
+    "choose" : null,
+    "conflictId" : null,
+    "actor" : null,
+    "title" : "仅改浮点求和顺序：同一物理量给出不同舍入结果，差异必须可见",
+    "expect" : {
+      "entry" : {
+        "double" : 4.0,
+        "rowDof" : "N2.ux",
+        "exact" : "5",
+        "colDof" : "N2.ux"
+      }
+    }
+  }, {
+    "n" : 4,
+    "action" : "ASSEMBLE",
+    "id" : "D3",
+    "on" : "v1",
+    "version" : null,
+    "summation" : "DOUBLE_CANONICAL",
+    "strategy" : null,
+    "renumber" : "REN-1",
+    "constraintRevision" : null,
+    "choose" : null,
+    "conflictId" : null,
+    "actor" : null,
+    "title" : "重编号只改变显示索引，物理对应与数值不变",
+    "expect" : {
+      "renumbered" : true,
+      "entry" : {
+        "double" : 5.0,
+        "rowDof" : "N2.ux",
+        "exact" : "5",
+        "colDof" : "N2.ux"
+      }
+    }
+  }, {
+    "n" : 5,
+    "action" : "LOAD",
+    "id" : "v2",
+    "on" : null,
+    "version" : null,
+    "summation" : null,
+    "strategy" : null,
+    "renumber" : null,
+    "constraintRevision" : null,
+    "choose" : null,
+    "conflictId" : null,
+    "actor" : null,
+    "title" : "参数修订：约束版本切换 BC-1 -> BC-2",
+    "expect" : {
+      "version" : "v2"
+    }
+  }, {
+    "n" : 6,
+    "action" : "ASSEMBLE",
+    "id" : "D4",
+    "on" : "v2",
+    "version" : null,
+    "summation" : "DOUBLE_CANONICAL",
+    "strategy" : null,
+    "renumber" : null,
+    "constraintRevision" : null,
+    "choose" : null,
+    "conflictId" : null,
+    "actor" : null,
+    "title" : "参数修订后的装配：N4.uy 约束影响行更新",
+    "expect" : {
+      "constraintEffect" : "BC-003",
+      "complete" : true
+    }
+  }, {
+    "n" : 7,
+    "action" : "LOAD",
+    "id" : "v3",
+    "on" : null,
+    "version" : null,
+    "summation" : null,
+    "strategy" : null,
+    "renumber" : null,
+    "constraintRevision" : null,
+    "choose" : null,
+    "conflictId" : null,
+    "actor" : null,
+    "title" : "局部源数据改动：E2 局部矩阵一项不可转换",
+    "expect" : {
+      "version" : "v3"
+    }
+  }, {
+    "n" : 8,
+    "action" : "ASSEMBLE",
+    "id" : "D5",
+    "on" : "v3",
+    "version" : null,
+    "summation" : "DOUBLE_CANONICAL",
+    "strategy" : null,
+    "renumber" : null,
+    "constraintRevision" : null,
+    "choose" : null,
+    "conflictId" : null,
+    "actor" : null,
+    "title" : "不可转换值留在原位置并附诊断，不丢值",
+    "expect" : {
+      "incompleteEntry" : {
+        "colDof" : "N3.ux",
+        "rowDof" : "N2.ux"
+      },
+      "diagnosticsContains" : [ "UNCONVERTIBLE_VALUE" ]
+    }
+  }, {
+    "n" : 9,
+    "action" : "ANALYZE",
+    "id" : null,
+    "on" : "v2->v3",
+    "version" : null,
+    "summation" : null,
+    "strategy" : null,
+    "renumber" : null,
+    "constraintRevision" : null,
+    "choose" : null,
+    "conflictId" : null,
+    "actor" : null,
+    "title" : "依赖图传播：v2->v3 只影响 E2 相关自由度",
+    "expect" : {
+      "affectedDofs" : [ "N2.ux", "N2.uy", "N3.ux", "N3.uy" ],
+      "notAffected" : [ "N4.ux", "N4.uy" ]
+    }
+  }, {
+    "n" : 10,
+    "action" : "SAVE",
+    "id" : null,
+    "on" : "v3",
+    "version" : "v4a",
+    "summation" : null,
+    "strategy" : null,
+    "renumber" : null,
+    "constraintRevision" : null,
+    "choose" : null,
+    "conflictId" : null,
+    "actor" : "engineer-a",
+    "title" : "工程师 A 从 v3 保存分支 v4a（重编号选择）",
+    "expect" : {
+      "saved" : "v4a"
+    }
+  }, {
+    "n" : 11,
+    "action" : "SAVE",
+    "id" : null,
+    "on" : "v3",
+    "version" : "v4b",
+    "summation" : null,
+    "strategy" : null,
+    "renumber" : null,
+    "constraintRevision" : null,
+    "choose" : null,
+    "conflictId" : null,
+    "actor" : "engineer-b",
+    "title" : "工程师 B 从同一 v3 保存分支 v4b：出现可解决的冲突",
+    "expect" : {
+      "conflict" : true
+    }
+  }, {
+    "n" : 12,
+    "action" : "RESOLVE",
+    "id" : null,
+    "on" : null,
+    "version" : null,
+    "summation" : null,
+    "strategy" : null,
+    "renumber" : null,
+    "constraintRevision" : null,
+    "choose" : "v4a",
+    "conflictId" : null,
+    "actor" : null,
+    "title" : "解决冲突：选择 v4a 继续，v4b 保留不覆盖",
+    "expect" : {
+      "unchosenRetained" : "v4b",
+      "chosen" : "v4a"
+    }
+  }, {
+    "n" : 13,
+    "action" : "ASSEMBLE",
+    "id" : "D8",
+    "on" : "v4b",
+    "version" : null,
+    "summation" : "DOUBLE_CANONICAL",
+    "strategy" : null,
+    "renumber" : null,
+    "constraintRevision" : null,
+    "choose" : null,
+    "conflictId" : null,
+    "actor" : null,
+    "title" : "混合策略约束集被阻塞：消元与 penalty 不混用，两个候选保留",
+    "expect" : {
+      "candidates" : 2,
+      "diagnosticsContains" : [ "CONSTRAINT_STRATEGY_CONFLICT" ],
+      "blocked" : true
+    }
+  }, {
+    "n" : 14,
+    "action" : "ASSEMBLE",
+    "id" : "D9",
+    "on" : "v4b",
+    "version" : null,
+    "summation" : "DOUBLE_CANONICAL",
+    "strategy" : "ELIMINATION",
+    "renumber" : null,
+    "constraintRevision" : null,
+    "choose" : null,
+    "conflictId" : null,
+    "actor" : null,
+    "title" : "裁定采用消元策略后装配成功，penalty 候选仍保留在档案中",
+    "expect" : {
+      "complete" : true
+    }
+  }, {
+    "n" : 15,
+    "action" : "ASSEMBLE",
+    "id" : "D6",
+    "on" : "v1",
+    "version" : null,
+    "summation" : "DOUBLE_CANONICAL",
+    "strategy" : null,
+    "renumber" : null,
+    "constraintRevision" : "BC-4",
+    "choose" : null,
+    "conflictId" : null,
+    "actor" : null,
+    "title" : "约束冲突：同一自由度两个约束，阻塞并保留两个合法候选",
+    "expect" : {
+      "candidates" : 2,
+      "diagnosticsContains" : [ "CONSTRAINT_CONFLICT" ],
+      "blocked" : true
+    }
+  }, {
+    "n" : 16,
+    "action" : "DECIDE",
+    "id" : null,
+    "on" : "v1",
+    "version" : null,
+    "summation" : null,
+    "strategy" : null,
+    "renumber" : null,
+    "constraintRevision" : null,
+    "choose" : "BC-005",
+    "conflictId" : null,
+    "actor" : null,
+    "title" : "人工裁定：保留 BC-005，拒绝 BC-006（未采纳候选保留）",
+    "expect" : {
+      "decision" : "BC-005",
+      "rejectedKept" : true
+    }
+  }, {
+    "n" : 17,
+    "action" : "ASSEMBLE",
+    "id" : "D7",
+    "on" : "v5",
+    "version" : null,
+    "summation" : "DOUBLE_CANONICAL",
+    "strategy" : null,
+    "renumber" : null,
+    "constraintRevision" : null,
+    "choose" : null,
+    "conflictId" : null,
+    "actor" : null,
+    "title" : "裁定后的装配可追溯：约束影响只来自被采纳的约束",
+    "expect" : {
+      "constraintEffect" : "BC-005",
+      "complete" : true
+    }
+  }, {
+    "n" : 18,
+    "action" : "EXPORT_IMPORT",
+    "id" : null,
+    "on" : null,
+    "version" : null,
+    "summation" : null,
+    "strategy" : null,
+    "renumber" : null,
+    "constraintRevision" : null,
+    "choose" : null,
+    "conflictId" : null,
+    "actor" : null,
+    "title" : "导出、删除本地数据库、再导入：身份/顺序/来源关系保持",
+    "expect" : {
+      "identityPreserved" : true
+    }
+  }, {
+    "n" : 19,
+    "action" : "CHECKOUT",
+    "id" : null,
+    "on" : null,
+    "version" : "v1",
+    "summation" : null,
+    "strategy" : null,
+    "renumber" : null,
+    "constraintRevision" : null,
+    "choose" : null,
+    "conflictId" : null,
+    "actor" : null,
+    "title" : "回到历史事件对应版本：恢复当时的依赖版本与可见结论",
+    "expect" : {
+      "version" : "v1"
+    }
+  }, {
+    "n" : 20,
+    "action" : "ASSEMBLE",
+    "id" : "D10",
+    "on" : "v1",
+    "version" : null,
+    "summation" : "DOUBLE_CANONICAL",
+    "strategy" : null,
+    "renumber" : null,
+    "constraintRevision" : null,
+    "choose" : null,
+    "conflictId" : null,
+    "actor" : null,
+    "title" : "历史版本重放结果与 D1 一致，不被最新计算覆盖",
+    "expect" : {
+      "entry" : {
+        "double" : 5.0,
+        "rowDof" : "N2.ux",
+        "exact" : "5",
+        "colDof" : "N2.ux"
+      }
+    }
+  } ]
+}
